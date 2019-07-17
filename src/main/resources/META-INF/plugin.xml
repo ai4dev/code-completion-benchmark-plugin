@@ -1,23 +1,17 @@
-<idea-plugin>
-    <id>org.jetbrains.research.groups.ml_methods.code-completion-benchmark-plugin</id>
-    <name>code-completion-benchmark-plugin</name>
-    <vendor></vendor>
+<idea-plugin url="https://github.com/ml-in-programming/code-completion-benchmark-plugin">
+    <id>org.jetbrains.research.groups.ml_methods.code-completion-benchmark</id>
+    <name>code-completion-benchmark</name>
+    <vendor url="https://research.jetbrains.org/ru/groups/ml_methods">Machine Learning Methods in Software Engineering</vendor>
 
     <description><![CDATA[
     IntelliJ code completion benchmark plugin
     ]]></description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
-    -->
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <applicationService serviceInterface="com.intellij.codeInsight.completion.CompletionFinalSorter$Factory"
+                            serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.CompletionSorterFactory"/>
     </extensions>
-
-    <actions>
-        <!-- Add your actions here -->
-    </actions>
 </idea-plugin>
