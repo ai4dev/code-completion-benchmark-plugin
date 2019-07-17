@@ -14,4 +14,11 @@
         <applicationService serviceInterface="com.intellij.codeInsight.completion.CompletionFinalSorter$Factory"
                             serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.CompletionSorterFactory"/>
     </extensions>
+    <actions>
+        <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFile"
+                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFile"
+                text="Tokenize File">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
