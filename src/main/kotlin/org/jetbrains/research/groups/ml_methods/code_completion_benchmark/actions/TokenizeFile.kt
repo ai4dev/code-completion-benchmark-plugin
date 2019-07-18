@@ -26,7 +26,7 @@ class TokenizeFile : AnAction() {
         }
     }
 
-    private fun concatLines(lines: List<List<String>>) : String {
+    private fun concatLines(lines: List<List<String>>): String {
         return with(lines) {
             forEach { lineSeq -> lineSeq.joinToString(" ")}
             joinToString("\n")

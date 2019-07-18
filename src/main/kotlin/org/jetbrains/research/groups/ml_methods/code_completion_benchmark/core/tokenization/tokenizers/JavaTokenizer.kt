@@ -2,9 +2,11 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.
 
 import com.intellij.lang.java.lexer.JavaLexer
 import com.intellij.pom.java.LanguageLevel
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Reader
 import java.util.ArrayList
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.Tokenizer
+import java.io.File
 
 class JavaTokenizer : Tokenizer {
 
@@ -16,6 +18,10 @@ class JavaTokenizer : Tokenizer {
 
     override fun tokenizeText(text: String): Sequence<Sequence<String>> {
         return tokenizeLines(text).asSequence().map{ it.asSequence() }
+    }
+
+    override fun tokenizeFile(file: File): Sequence<Sequence<String>> {
+        return tokenizeText(Reader.readLines(file).joinToString("\n"))
     }
 
     fun tokenizeLines(text: CharSequence): List<List<String>> {
