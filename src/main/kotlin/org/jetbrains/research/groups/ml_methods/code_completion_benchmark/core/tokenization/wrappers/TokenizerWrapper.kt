@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.builders
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.wrappers
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.Tokenizer
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
@@ -7,7 +7,7 @@ import java.io.IOException
 import java.nio.file.Files
 import kotlin.streams.asSequence
 
-class TokenizerBuilder (val tokenizer: Tokenizer, val isPerLine: Boolean) {
+class TokenizerWrapper (val tokenizer: Tokenizer, val isPerLine: Boolean) {
 
     var sentenceMarkers = false
     var regex = ".*"
@@ -20,25 +20,24 @@ class TokenizerBuilder (val tokenizer: Tokenizer, val isPerLine: Boolean) {
     }
 
     fun lexDirectory(directory: File): Sequence<Pair<File, Sequence<Sequence<String>>>>? {
-        return try {
-            Files.walk(directory.toPath())
-                    .asSequence()
-                    .map { it.toFile() }
-                    .filter { it.isFile }
-                    .filter { willLexFile(it) }
-                    .map { fIn -> Pair(fIn, lexFile(fIn)) }
+        val filesSeq = try {
+            Files.walk(directory.toPath()).asSequence()
         } catch (e: IOException) {
             e.printStackTrace()
-            null
+            return null
         }
-
+        return filesSeq
+                .map { it.toFile() }
+                .filter { it.isFile && willLexFile(it) }
+                .map { fIn ->
+                    Pair(fIn, lexFile(fIn))
+                }
     }
-
     fun lexFile(file: File): Sequence<Sequence<String>> {
-        return if (!willLexFile(file))
-            emptySequence()
-        else
-            lexTokens(tokenizer.tokenizeFile(file))
+        return when (!willLexFile(file)) {
+            true -> emptySequence()
+            false -> lexTokens(tokenizer.tokenizeFile(file))
+        }
     }
 
     fun lexText(content: String): Sequence<Sequence<String>> {
@@ -48,11 +47,10 @@ class TokenizerBuilder (val tokenizer: Tokenizer, val isPerLine: Boolean) {
     fun lexLine(line: String): Sequence<String> {
         val lexed = tokenizer.tokenizeLine(line)
 
-        return if (sentenceMarkers)
-            sequenceOf(Vocabulary.BOS) + (lexed + sequenceOf(Vocabulary.EOS))
-        else
-            lexed
-
+        return when (sentenceMarkers) {
+            true -> sequenceOf(Vocabulary.BOS) + (lexed + sequenceOf(Vocabulary.EOS))
+            false -> lexed
+        }
     }
 
     fun lexDirectory(from: File, to: File) {
@@ -77,7 +75,7 @@ class TokenizerBuilder (val tokenizer: Tokenizer, val isPerLine: Boolean) {
                         try {
                             val lexed = lexFile(fIn)
                             lexed.map { l -> l.map { w -> vocabulary?.store(w)?.toString() ?: w } }
-                            //Writer.writeTokenized(fOut, lexed)
+                            Writer.writeTokenized(fOut, lexed)
                         } catch (e: IOException) {
                             println("Exception in LexerBuilder.tokenize(), from $fIn to $fOut")
                             e.printStackTrace()
@@ -91,17 +89,17 @@ class TokenizerBuilder (val tokenizer: Tokenizer, val isPerLine: Boolean) {
 
 
     private fun lexTokens(tokens: Sequence<Sequence<String>>): Sequence<Sequence<String>> {
-        return if (sentenceMarkers)
-            lexWithDelimiters(tokens)
-        else
-            tokens
+        return when (sentenceMarkers) {
+            true -> lexWithDelimiters(tokens)
+            false -> tokens
+        }
     }
 
     private fun lexWithDelimiters(lexed: Sequence<Sequence<String>>): Sequence<Sequence<String>> {
-        return if (isPerLine)
-            lexed.map { sequenceOf(Vocabulary.BOS) + it + sequenceOf(Vocabulary.EOS) }
-        else
-            sequenceOf(sequenceOf(Vocabulary.BOS)) + lexed + sequenceOf(sequenceOf(Vocabulary.EOS))
+        return when (isPerLine) {
+            true -> lexed.map { sequenceOf(Vocabulary.BOS) + it + sequenceOf(Vocabulary.EOS) }
+            false -> sequenceOf(sequenceOf(Vocabulary.BOS)) + lexed + sequenceOf(sequenceOf(Vocabulary.EOS))
+        }
 
     }
 }

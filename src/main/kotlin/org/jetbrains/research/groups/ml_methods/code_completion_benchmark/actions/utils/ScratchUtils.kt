@@ -1,39 +1,27 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.utils
 
 import com.intellij.ide.scratch.RootType
 import com.intellij.ide.scratch.ScratchFileService
 import com.intellij.lang.Language
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
-import com.intellij.util.PathUtil
-import com.intellij.openapi.command.WriteCommandAction.writeCommandAction
 import com.intellij.ui.AppUIUtil
+import com.intellij.util.PathUtil
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.tokenizers.JavaTokenizer
+object ScratchUtils {
 
-class TokenizeFile : AnAction() {
-    override fun actionPerformed(event: AnActionEvent) {
-        val project = event.project ?: return
-        JavaTokenizer().let { tokenizer ->
-            val fileText = event.dataContext.getData("fileText") as String
-            val tokenized = tokenizer.tokenizeLines(fileText)
-            tryToOpenInScratch(project, concatLines(tokenized))
-        }
-    }
-
-    private fun concatLines(lines: List<List<String>>): String {
+    fun concatLines(lines: List<List<String>>): String {
         return with(lines) {
-            forEach { lineSeq -> lineSeq.joinToString(" ")}
+            forEach { lineSeq -> lineSeq.joinToString(" ") }
             joinToString("\n")
         }
     }
 
-    private fun tryToOpenInScratch(project: Project, text: String): Boolean {
+    fun tryToOpenInScratch(project: Project, text: String): Boolean {
         val fileName = PathUtil.makeFileName("tokens", "txt")
         try {
             val computable = ThrowableComputable<NavigatablePsiElement, Exception> {
@@ -49,7 +37,7 @@ class TokenizeFile : AnAction() {
                 psiFile!!
             }
 
-            val psiElement = writeCommandAction(project)
+            val psiElement = WriteCommandAction.writeCommandAction(project)
                     .withName("Tokenizing file")
                     .compute(computable)
 

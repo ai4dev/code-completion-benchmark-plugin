@@ -15,10 +15,23 @@
                             serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.CompletionSorterFactory"/>
     </extensions>
     <actions>
-        <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFile"
-                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFile"
-                text="Tokenize File">
+        <group id="CompletionActions" text="Completion Test" popup="true">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </group>
+        <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFileAction"
+                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFileAction"
+                text="Tokenize File">
+            <add-to-group
+                    group-id="CompletionActions"
+                    anchor="first"/>
+        </action>
+        <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.BuildVocabularyAction"
+                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.BuildVocabularyAction"
+                text="Build Vocabulary for File">
+            <add-to-group
+                    group-id="CompletionActions"
+                    anchor="after"
+                    relative-to-action="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFileAction"/>
         </action>
     </actions>
 </idea-plugin>
