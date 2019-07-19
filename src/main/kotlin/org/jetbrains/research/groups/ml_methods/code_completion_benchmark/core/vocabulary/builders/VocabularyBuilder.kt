@@ -13,7 +13,7 @@ import kotlin.math.roundToInt
 
 object VocabularyBuilder {
 
-    private val PRINT_FREQ = 1000000
+    private const val PRINT_FREQ = 1000000
 
     var cutOff = 0
         set(value) {
@@ -36,10 +36,11 @@ object VocabularyBuilder {
                             "Building vocabulary, %dM tokens processed\n",
                             (iterationCount[0] / PRINT_FREQ).toFloat().roundToInt()
                         )
-                }.asIterable()
+                }
+                .flatMap { it }
                 .groupingBy { it }
                 .eachCount()
-                .mapKeys { it.key.joinToString() }
+                .mapKeys { it.key }
 
         val ordered = counts.entries.sortedByDescending { it.value }
 
@@ -47,7 +48,7 @@ object VocabularyBuilder {
         ordered.forEach { (token, count) ->
             when (count < cutOff) {
                 true -> unkCount += count
-                false -> vocabulary.store(token.toString(), count)
+                false -> vocabulary.store(token, count)
             }
         }
 
