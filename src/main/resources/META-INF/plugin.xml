@@ -12,7 +12,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceInterface="com.intellij.codeInsight.completion.CompletionFinalSorter$Factory"
-                            serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.CompletionSorterFactory"/>
+                            serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.sorting.CompletionSorterFactory"/>
     </extensions>
     <actions>
         <group id="CompletionActions" text="Completion Test" popup="true">

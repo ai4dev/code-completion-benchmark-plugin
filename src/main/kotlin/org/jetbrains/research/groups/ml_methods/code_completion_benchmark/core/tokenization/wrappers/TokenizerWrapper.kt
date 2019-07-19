@@ -1,5 +1,6 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.wrappers
 
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Writer
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.Tokenizer
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
 import java.io.File

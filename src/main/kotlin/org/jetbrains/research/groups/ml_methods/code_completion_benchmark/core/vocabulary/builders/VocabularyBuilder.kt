@@ -39,7 +39,7 @@ object VocabularyBuilder {
                 }.asIterable()
                 .groupingBy { it }
                 .eachCount()
-                .mapKeys { it.key.toString() }
+                .mapKeys { it.key.joinToString() }
 
         val ordered = counts.entries.sortedByDescending { it.value }
 
@@ -47,7 +47,7 @@ object VocabularyBuilder {
         ordered.forEach { (token, count) ->
             when (count < cutOff) {
                 true -> unkCount += count
-                false -> vocabulary.store(token, count)
+                false -> vocabulary.store(token.toString(), count)
             }
         }
 

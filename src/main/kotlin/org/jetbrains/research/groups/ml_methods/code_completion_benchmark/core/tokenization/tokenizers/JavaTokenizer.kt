@@ -33,7 +33,7 @@ class JavaTokenizer : Tokenizer {
         while (lexer.tokenType != null) {
             var tokenText = lexer.tokenText
 
-            if(tokenText == "\n") {
+            if (tokenText.contains(System.lineSeparator())) {
                 lineTokens.add(ArrayList())
             }
 

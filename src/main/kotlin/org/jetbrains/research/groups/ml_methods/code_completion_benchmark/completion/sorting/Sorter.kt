@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.sorting
 
 import com.intellij.codeInsight.completion.CompletionFinalSorter
 import com.intellij.codeInsight.completion.CompletionParameters
