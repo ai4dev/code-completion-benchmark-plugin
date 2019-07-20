@@ -17,7 +17,7 @@ object ScratchUtils {
     fun concatLines(lines: List<List<String>>): String {
         return with(lines) {
             forEach { lineSeq -> lineSeq.joinToString(" ") }
-            joinToString("\n")
+            joinToString(System.lineSeparator())
         }
     }
 

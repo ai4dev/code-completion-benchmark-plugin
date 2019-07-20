@@ -30,13 +30,6 @@ object VocabularyBuilder {
         val counts = tokenizerWrapper
                 .lexDirectory(root)!!
                 .flatMap { it.second }
-                .onEach {
-                    if (++iterationCount[0] % PRINT_FREQ == 0)
-                        System.out.printf(
-                            "Building vocabulary, %dM tokens processed\n",
-                            (iterationCount[0] / PRINT_FREQ).toFloat().roundToInt()
-                        )
-                }
                 .flatMap { it }
                 .groupingBy { it }
                 .eachCount()
@@ -54,9 +47,6 @@ object VocabularyBuilder {
 
         vocabulary.store(Vocabulary.UNK, vocabulary.getCount(Vocabulary.UNK)!! + unkCount)
 
-        if (iterationCount[0] > PRINT_FREQ)
-            println("Vocabulary constructed on ${iterationCount[0]} tokens, size: ${vocabulary.size()}")
-
         return vocabulary
     }
 
@@ -68,10 +58,7 @@ object VocabularyBuilder {
                 .filter { it[0].toInt() >= cutOff }
                 .forEach { split ->
                     val count = split[0].toInt()
-                    val index = split[1].toInt()
-                    if (index > 0 && index != vocabulary.size()) {
-                        println("VocabularyRunner.read(): non-consecutive indices while reading vocabulary!")
-                    }
+                    //val index = split[1].toInt()
                     val token = split[2]
                     vocabulary.store(token, count)
                 }

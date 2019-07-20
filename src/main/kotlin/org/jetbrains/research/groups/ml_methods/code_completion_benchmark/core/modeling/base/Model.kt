@@ -11,9 +11,7 @@ interface Model {
     fun pauseDynamic()
     fun unPauseDynamic()
 
-    fun learn(input: List<Int>) {
-        (0 until input.size).forEach { learnToken(input, it) }
-    }
+    fun learn(input: List<Int>)
 
     fun learnToken(input: List<Int>, index: Int)
 
@@ -21,9 +19,7 @@ interface Model {
 
     fun forgetToken(input: List<Int>, index: Int)
 
-    fun getConfidence(input: List<Int>, index: Int): Double {
-        return 0.0
-    }
+    fun getConfidence(input: List<Int>, index: Int): Double = 0.0
 
     fun model(input: List<Int>): List<Pair<Double, Double>>
 

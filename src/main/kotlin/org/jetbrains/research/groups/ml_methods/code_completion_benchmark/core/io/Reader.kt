@@ -40,8 +40,8 @@ object Reader {
 
             readFromBufferedReader(bufferedReader)
 
-        } catch (e2: IOException) {
-            e2.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
             listOf()
         }
     }
@@ -54,9 +54,8 @@ object Reader {
 
         while (reading) {
             line = br.readLine()
-            if (line == null) {
+            if (line == null)
                 reading = false
-            }
             else
                 lines.add(line)
         }

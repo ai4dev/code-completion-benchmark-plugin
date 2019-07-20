@@ -77,7 +77,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         try {
             Files.walk(file.toPath())
                     .map { it.toFile() }
-                    .filter{ it.isFile }
+                    .filter { it.isFile }
                     .forEach { forgetFile(it) }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -88,7 +88,8 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
     fun forgetFile(f: File) {
         if (!tokenizerWrapper.willLexFile(f))
             return
-        this.model.notify(f)
+
+        model.notify(f)
         forgetTokens(tokenizerWrapper.lexFile(f))
     }
 
@@ -115,14 +116,16 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         this.ent = 0.0
         return this.tokenizerWrapper.lexDirectory(file)!!
                 .map { p ->
-                    this.model.notify(p.first)
+                    model.notify(p.first)
                     Pair(p.first, modelTokens(p.second))
                 }
     }
 
     fun modelFile(f: File): List<List<Double>>? {
-        if (!this.tokenizerWrapper.willLexFile(f)) return null
-        this.model.notify(f)
+        if (!this.tokenizerWrapper.willLexFile(f))
+            return null
+
+        model.notify(f)
         return modelTokens(tokenizerWrapper.lexFile(f))
     }
 
@@ -131,10 +134,10 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
     }
 
     fun modelTokens(lexed: Sequence<Sequence<String>>): List<List<Double>> {
-        this.vocabulary.setCheckpoint()
+        vocabulary.setCheckpoint()
         val lineProbs: List<List<Double>>
 
-        if (this.tokenizerWrapper.isPerLine) {
+        if (tokenizerWrapper.isPerLine) {
             lineProbs = lexed
                     .map { vocabulary.toIndices(it) }
                     .map { it.toList() }
@@ -143,6 +146,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
                     .toList()
         } else {
             val lineLengths = ArrayList<Int>()
+
             val modeled = modelSequence(
                 lexed
                         .map { vocabulary.toIndices(it) }
@@ -152,26 +156,32 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
                         .toList()
             )
             lineProbs = toLines(modeled, lineLengths)
+
             logModelingProgress(modeled)
         }
-        this.vocabulary.restoreCheckpoint()
+
+        vocabulary.restoreCheckpoint()
         return lineProbs
     }
 
     private fun modelSequence(tokens: List<Int>): List<Double> {
         if (selfTesting) model.forget(tokens)
+
         val entropies = model.model(tokens).stream()
                 .map { toProb(it) }
                 .map { toEntropy(it) }
                 .collect(Collectors.toList())
+
         if (selfTesting)
             model.learn(tokens)
+
         return entropies
     }
 
     fun predict(file: File): Sequence<Pair<File, List<List<Double>>>> {
         modelStats = longArrayOf(0, -System.currentTimeMillis())
         mrr = 0.0
+
         return tokenizerWrapper.lexDirectory(file)!!
                 .map { p ->
                     model.notify(p.first)
@@ -203,6 +213,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
                     .toList()
         } else {
             val lineLengths = ArrayList<Int>()
+
             val modeled = predictSequence(lexed
                     .map { vocabulary.toIndices(it) }
                     .map { it.toList() }
@@ -211,23 +222,25 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
                     .toList()
             )
             lineProbs = toLines(modeled, lineLengths)
+
             logPredictionProgress(modeled)
         }
+
         vocabulary.restoreCheckpoint()
         return lineProbs
     }
 
     protected fun predictSequence(tokens: List<Int>): List<Double> {
-        if (selfTesting)
-            model.forget(tokens)
-        val preds = toPredictions(model.predict(tokens))
+        if (selfTesting) model.forget(tokens)
 
+        val preds = toPredictions(model.predict(tokens))
         val mrrs = (0 until tokens.size)
                 .map { preds[it].indexOf(tokens[it]) }
                 .map { toMRR(it) }
 
         if (selfTesting)
             model.learn(tokens)
+
         return mrrs
     }
 
@@ -257,13 +270,15 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
     private fun <K> toLines(modeled: List<K>, lineLengths: List<Int>): List<List<K>> {
         val perLine = ArrayList<List<K>>()
         var ix = 0
-        for (i in lineLengths.indices) {
+
+        lineLengths.indices.forEach { i ->
             val line = ArrayList<K>()
             for (j in 0 until lineLengths[i]) {
                 line.add(modeled[ix++])
             }
             perLine.add(line)
         }
+
         return perLine
     }
 
@@ -291,7 +306,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
             fileProbs
                     .flatMap {
                         it.asSequence()
-                                .flatMap { it.asSequence() }
+                                .flatMap { element -> element.asSequence() }
                                 .drop(1)
                     }
                     .asStream()
@@ -303,10 +318,9 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
     //TODO: remove after testing
     private fun logLearningProgress() {
         if (++learnStats[0] % LEARN_PRINT_INTERVAL == 0L && learnStats[1] != 0L) {
-            System.out.printf(
-                "Counting: %dM tokens processed in %ds\n",
-                (learnStats[0] / 1e6).roundToInt(),
-                (System.currentTimeMillis() + learnStats[1]) / 1000
+            println(
+                "Counting: ${ (learnStats[0] / 1e6).roundToInt() } tokens processed " +
+                        "in ${ (System.currentTimeMillis() + learnStats[1]) / 1000 }"
             )
         }
     }
@@ -317,12 +331,12 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         val prevCount = modelStats[0]
         modelStats[0] += stats.count
         ent += stats.sum
+
         if (modelStats[0] / MODEL_PRINT_INTERVAL > prevCount / MODEL_PRINT_INTERVAL && modelStats[1] != 0L) {
-            System.out.printf(
-                "Modeling: %dK tokens processed in %ds, avg. entropy: %.4f\n",
-                (modelStats[0] / 1e3).roundToInt(),
-                (System.currentTimeMillis() + modelStats[1]) / 1000, ent / modelStats[0]
-            )
+            println(
+                "Modeling: ${ (modelStats[0] / 1e3).roundToInt() } tokens processed " +
+                        "in ${ (System.currentTimeMillis() + modelStats[1]) / 1000 }, " +
+                        "avg. entropy: ${ ent / modelStats[0] }\n")
         }
     }
 
@@ -338,10 +352,10 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         mrr += stats.sum
 
         if (modelStats[0] / MODEL_PRINT_INTERVAL > prevCount / MODEL_PRINT_INTERVAL && modelStats[1] != 0L) {
-            System.out.printf(
-                "Predicting: %dK tokens processed in %ds, avg. MRR: %.4f\n",
-                (modelStats[0] / 1e3).roundToInt(),
-                (System.currentTimeMillis() + modelStats[1]) / 1000, mrr / modelStats[0]
+            println(
+                "Predicting: ${ (modelStats[0] / 1e3).roundToInt() } tokens processed " +
+                        "in ${ (System.currentTimeMillis() + modelStats[1]) / 1000 }, " +
+                        "avg. MRR: ${ mrr / modelStats[0] }\n"
             )
         }
     }
@@ -352,7 +366,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         private const val MODEL_PRINT_INTERVAL = 100000
 
         private val INV_NEG_LOG_2 = -1.0 / ln(2.0)
-        val DEFAULT_NGRAM_ORDER = 6
+        const val DEFAULT_NGRAM_ORDER = 6
 
         var predictionCutOff = 10
 

@@ -3,7 +3,6 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.
 import java.io.Externalizable
 import java.util.function.Consumer
 
-
 interface Counter : Externalizable {
 
     val count: Int

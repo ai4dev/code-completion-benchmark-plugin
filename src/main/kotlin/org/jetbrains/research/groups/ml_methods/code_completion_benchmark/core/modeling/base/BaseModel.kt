@@ -22,6 +22,10 @@ abstract class BaseModel : Model {
         }
     }
 
+    override fun learn(input: List<Int>) {
+        (0 until input.size).forEach { learnToken(input, it) }
+    }
+
     override fun forget(input: List<Int>) {
         (0 until input.size).forEach { forgetToken(input, it) }
     }

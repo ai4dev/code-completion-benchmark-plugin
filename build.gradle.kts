@@ -16,7 +16,7 @@ repositories {
 }
 
 intellij {
-    pluginName = "code-completion-benchmark-plugin"
+    pluginName = "code-completion-benchmark"
     version = "2019.1.3"
 
     updateSinceUntilBuild = false

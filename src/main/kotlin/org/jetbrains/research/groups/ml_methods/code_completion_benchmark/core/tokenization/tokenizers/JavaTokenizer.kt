@@ -17,11 +17,11 @@ class JavaTokenizer : Tokenizer {
     }
 
     override fun tokenizeText(text: String): Sequence<Sequence<String>> {
-        return tokenizeLines(text).asSequence().map{ it.asSequence() }
+        return tokenizeLines(text).asSequence().map { it.asSequence() }
     }
 
     override fun tokenizeFile(file: File): Sequence<Sequence<String>> {
-        return tokenizeText(Reader.readLines(file).joinToString("\n"))
+        return tokenizeText(Reader.readLines(file).joinToString(System.lineSeparator()))
     }
 
     fun tokenizeLines(text: CharSequence): List<List<String>> {
