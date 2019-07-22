@@ -3,10 +3,9 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.
 import com.intellij.lang.java.lexer.JavaLexer
 import com.intellij.pom.java.LanguageLevel
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Reader
-import java.util.ArrayList
-
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.Tokenizer
 import java.io.File
+import java.util.*
 
 class JavaTokenizer : Tokenizer {
 

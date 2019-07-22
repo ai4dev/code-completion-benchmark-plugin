@@ -1,6 +1,9 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io
 
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
 object Writer {

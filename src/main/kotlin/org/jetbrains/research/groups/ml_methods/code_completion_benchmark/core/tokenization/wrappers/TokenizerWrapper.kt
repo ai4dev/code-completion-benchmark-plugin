@@ -8,7 +8,7 @@ import java.io.IOException
 import java.nio.file.Files
 import kotlin.streams.asSequence
 
-class TokenizerWrapper (val tokenizer: Tokenizer, val isPerLine: Boolean) {
+class TokenizerWrapper(val tokenizer: Tokenizer, val isPerLine: Boolean) {
 
     var sentenceMarkers = false
     var regex = ".*"
@@ -34,9 +34,10 @@ class TokenizerWrapper (val tokenizer: Tokenizer, val isPerLine: Boolean) {
                     Pair(fIn, lexFile(fIn))
                 }
     }
+
     fun lexFile(file: File): Sequence<Sequence<String>> {
         return when (!willLexFile(file)) {
-            true -> emptySequence()
+            true  -> emptySequence()
             false -> lexTokens(tokenizer.tokenizeFile(file))
         }
     }
@@ -49,7 +50,7 @@ class TokenizerWrapper (val tokenizer: Tokenizer, val isPerLine: Boolean) {
         val lexed = tokenizer.tokenizeLine(line)
 
         return when (sentenceMarkers) {
-            true -> sequenceOf(Vocabulary.BOS) + (lexed + sequenceOf(Vocabulary.EOS))
+            true  -> sequenceOf(Vocabulary.BOS) + (lexed + sequenceOf(Vocabulary.EOS))
             false -> lexed
         }
     }
@@ -62,11 +63,11 @@ class TokenizerWrapper (val tokenizer: Tokenizer, val isPerLine: Boolean) {
         val count = intArrayOf(0)
         try {
             Files.walk(from.toPath())
-                    .map{ it.toFile() }
+                    .map { it.toFile() }
                     .filter { it.isFile }
                     .forEach { fIn ->
                         if (++count[0] % 1000 == 0) {
-                            println("Lexing at file ${ count[0] }")
+                            println("Lexing at file ${count[0]}")
                         }
                         val path = to.absolutePath + fIn.absolutePath.substring(from.absolutePath.length)
                         val fOut = File(path)
@@ -90,15 +91,12 @@ class TokenizerWrapper (val tokenizer: Tokenizer, val isPerLine: Boolean) {
 
 
     private fun lexTokens(tokens: Sequence<Sequence<String>>): Sequence<Sequence<String>> {
-        return when (sentenceMarkers) {
-            true -> lexWithDelimiters(tokens)
-            false -> tokens
-        }
+        return if (sentenceMarkers) lexWithDelimiters(tokens) else tokens
     }
 
     private fun lexWithDelimiters(lexed: Sequence<Sequence<String>>): Sequence<Sequence<String>> {
         return when (isPerLine) {
-            true -> lexed.map { sequenceOf(Vocabulary.BOS) + it + sequenceOf(Vocabulary.EOS) }
+            true  -> lexed.map { sequenceOf(Vocabulary.BOS) + it + sequenceOf(Vocabulary.EOS) }
             false -> sequenceOf(sequenceOf(Vocabulary.BOS)) + lexed + sequenceOf(sequenceOf(Vocabulary.EOS))
         }
 

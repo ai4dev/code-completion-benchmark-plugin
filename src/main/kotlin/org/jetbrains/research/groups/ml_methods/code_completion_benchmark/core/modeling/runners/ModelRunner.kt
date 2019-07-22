@@ -6,11 +6,9 @@ import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.v
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
-import java.util.ArrayList
-import java.util.DoubleSummaryStatistics
+import java.util.*
 import java.util.stream.Collectors
 import kotlin.math.ln
-
 import kotlin.math.roundToInt
 import kotlin.streams.asStream
 
@@ -320,8 +318,8 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
     private fun logLearningProgress() {
         if (++learnStats[0] % LEARN_PRINT_INTERVAL == 0L && learnStats[1] != 0L) {
             println(
-                "Counting: ${ (learnStats[0] / 1e6).roundToInt() } tokens processed " +
-                        "in ${ (System.currentTimeMillis() + learnStats[1]) / 1000 }"
+                "Counting: ${(learnStats[0] / 1e6).roundToInt()} tokens processed " +
+                        "in ${(System.currentTimeMillis() + learnStats[1]) / 1000}"
             )
         }
     }
@@ -335,9 +333,9 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
 
         if (modelStats[0] / MODEL_PRINT_INTERVAL > prevCount / MODEL_PRINT_INTERVAL && modelStats[1] != 0L) {
             println(
-                "Modeling: ${ (modelStats[0] / 1e3).roundToInt() } tokens processed " +
-                        "in ${ (System.currentTimeMillis() + modelStats[1]) / 1000 }, " +
-                        "avg. entropy: ${ ent / modelStats[0] }\n")
+                "Modeling: ${(modelStats[0] / 1e3).roundToInt()} tokens processed " +
+                        "in ${(System.currentTimeMillis() + modelStats[1]) / 1000}, " +
+                        "avg. entropy: ${ent / modelStats[0]}\n")
         }
     }
 
@@ -354,9 +352,9 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
 
         if (modelStats[0] / MODEL_PRINT_INTERVAL > prevCount / MODEL_PRINT_INTERVAL && modelStats[1] != 0L) {
             println(
-                "Predicting: ${ (modelStats[0] / 1e3).roundToInt() } tokens processed " +
-                        "in ${ (System.currentTimeMillis() + modelStats[1]) / 1000 }, " +
-                        "avg. MRR: ${ mrr / modelStats[0] }\n"
+                "Predicting: ${(modelStats[0] / 1e3).roundToInt()} tokens processed " +
+                        "in ${(System.currentTimeMillis() + modelStats[1]) / 1000}, " +
+                        "avg. MRR: ${mrr / modelStats[0]}\n"
             )
         }
     }

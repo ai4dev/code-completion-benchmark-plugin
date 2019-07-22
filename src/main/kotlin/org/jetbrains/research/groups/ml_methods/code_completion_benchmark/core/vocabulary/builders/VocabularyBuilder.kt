@@ -3,20 +3,15 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Reader
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.wrappers.TokenizerWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStreamWriter
+import java.io.*
 import java.nio.charset.StandardCharsets
-import kotlin.math.roundToInt
 
 object VocabularyBuilder {
 
     var cutOff = 0
         set(value) {
-            field = when(value < 0) {
-                true -> 0
+            field = when (value < 0) {
+                true  -> 0
                 false -> value
             }
         }
@@ -37,7 +32,7 @@ object VocabularyBuilder {
         var unkCount = 0
         ordered.forEach { (token, count) ->
             when (count < cutOff) {
-                true -> unkCount += count
+                true  -> unkCount += count
                 false -> vocabulary.store(token, count)
             }
         }

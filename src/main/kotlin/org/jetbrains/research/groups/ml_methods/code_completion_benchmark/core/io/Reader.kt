@@ -1,11 +1,6 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io
 
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStreamReader
-import java.io.UncheckedIOException
+import java.io.*
 import java.nio.channels.Channels
 import java.nio.channels.FileChannel
 import java.nio.charset.CodingErrorAction
@@ -52,7 +47,7 @@ object Reader {
 
         var reading = true
 
-        while (reading){
+        while (reading) {
             line = br.readLine()
             if (line == null)
                 reading = false

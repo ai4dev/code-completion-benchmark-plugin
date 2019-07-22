@@ -1,7 +1,7 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary
 
 import java.io.Serializable
-import java.util.ArrayList
+import java.util.*
 import kotlin.collections.HashMap
 
 open class Vocabulary : Serializable {
