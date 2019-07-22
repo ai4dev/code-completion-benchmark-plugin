@@ -12,13 +12,13 @@ abstract class BaseModel : Model {
     private var dynamicDepth = 0
 
     override fun pauseDynamic() {
-        this.dynamicDepth++
-        this.dynamic = false
+        dynamicDepth++
+        dynamic = false
     }
 
     override fun unPauseDynamic() {
-        if (this.wasDynamic && this.dynamicDepth > 0 && --this.dynamicDepth == 0) {
-            this.dynamic = true
+        if (wasDynamic && dynamicDepth > 0 && --dynamicDepth == 0) {
+            dynamic = true
         }
     }
 
@@ -51,8 +51,7 @@ abstract class BaseModel : Model {
     override fun modelToken(input: List<Int>, index: Int): Pair<Double, Double> {
         return modelAtIndex(input, index)
                 .also {
-                    if (dynamic)
-                        learnToken(input, index)
+                    if (dynamic) learnToken(input, index)
                 }
     }
 
@@ -70,8 +69,7 @@ abstract class BaseModel : Model {
         val predictions = predictAtIndex(input, index)
 
         dynamic = temp
-        if (dynamic)
-            learnToken(input, index)
+        if (dynamic) learnToken(input, index)
 
         return predictions
     }

@@ -50,14 +50,17 @@ open class Vocabulary : Serializable {
 
     fun store(token: String, count: Int = 1): Int {
         var index: Int? = wordIndices[token]
-        if (index == null) {
-            index = wordIndices.size
-            wordIndices[token] = index
-            words.add(token)
-            counts.add(count)
-        } else {
-            counts[index] = count
+
+        index?.let { idx ->
+            counts[idx] = count
+            return idx
         }
+
+        index = wordIndices.size
+        wordIndices[token] = index
+        words.add(token)
+        counts.add(count)
+
         return index
     }
 
@@ -70,18 +73,19 @@ open class Vocabulary : Serializable {
     }
 
     fun toIndex(token: String): Int {
-        var index: Int? = wordIndices[token]
-        if (index == null) {
-            if (closed) {
-                return wordIndices[UNK]!!
+        val index: Int? = wordIndices[token]
+        index ?: run {
+            return if (closed) {
+                wordIndices[UNK]!!
             } else {
-                index = wordIndices.size
-                wordIndices[token] = index
+                val idx = wordIndices.size
+                wordIndices[token] = idx
                 words.add(token)
                 counts.add(1)
+                idx
             }
         }
-        return index
+        return index!!
     }
 
     fun getCount(token: String): Int? {

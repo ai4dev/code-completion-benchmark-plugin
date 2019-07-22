@@ -13,8 +13,6 @@ import kotlin.math.roundToInt
 
 object VocabularyBuilder {
 
-    private const val PRINT_FREQ = 1000000
-
     var cutOff = 0
         set(value) {
             field = when(value < 0) {
@@ -25,7 +23,6 @@ object VocabularyBuilder {
 
     fun build(tokenizerWrapper: TokenizerWrapper, root: File): Vocabulary {
         val vocabulary = Vocabulary()
-        val iterationCount = intArrayOf(0)
 
         val counts = tokenizerWrapper
                 .lexDirectory(root)!!

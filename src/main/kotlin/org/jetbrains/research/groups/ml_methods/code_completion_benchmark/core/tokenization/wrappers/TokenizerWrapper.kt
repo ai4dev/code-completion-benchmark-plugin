@@ -66,7 +66,7 @@ class TokenizerWrapper (val tokenizer: Tokenizer, val isPerLine: Boolean) {
                     .filter { it.isFile }
                     .forEach { fIn ->
                         if (++count[0] % 1000 == 0) {
-                            println("Lexing at file " + count[0])
+                            println("Lexing at file ${ count[0] }")
                         }
                         val path = to.absolutePath + fIn.absolutePath.substring(from.absolutePath.length)
                         val fOut = File(path)

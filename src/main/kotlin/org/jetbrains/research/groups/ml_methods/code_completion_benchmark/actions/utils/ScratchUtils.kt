@@ -13,12 +13,10 @@ import com.intellij.ui.AppUIUtil
 import com.intellij.util.PathUtil
 
 object ScratchUtils {
-
     fun concatLines(lines: List<List<String>>): String {
-        return with(lines) {
-            forEach { lineSeq -> lineSeq.joinToString(" ") }
-            joinToString(System.lineSeparator())
-        }
+        return lines
+                .joinToString(separator = "",
+                              transform = { it.joinToString("|") })
     }
 
     fun tryToOpenInScratch(project: Project, text: String): Boolean {

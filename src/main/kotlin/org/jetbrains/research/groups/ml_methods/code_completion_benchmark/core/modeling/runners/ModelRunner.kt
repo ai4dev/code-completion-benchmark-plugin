@@ -38,9 +38,9 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
                     learnTokens(p.second)
                 }
         if (learnStats[0] > LEARN_PRINT_INTERVAL && learnStats[1] != 0L) {
-            System.out.printf(
-                "Counting complete: %d tokens processed in %ds\n",
-                this.learnStats[0], (System.currentTimeMillis() + learnStats[1]) / 1000
+            println(
+                "Counting complete: ${learnStats[0]} tokens processed " +
+                        "in ${(System.currentTimeMillis() + learnStats[1]) / 1000}s\n"
             )
         }
     }
@@ -112,9 +112,9 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
     }
 
     fun modelDirectory(file: File): Sequence<Pair<File, List<List<Double>>>> {
-        this.modelStats = longArrayOf(0, -System.currentTimeMillis())
-        this.ent = 0.0
-        return this.tokenizerWrapper.lexDirectory(file)!!
+        modelStats = longArrayOf(0, -System.currentTimeMillis())
+        ent = 0.0
+        return tokenizerWrapper.lexDirectory(file)!!
                 .map { p ->
                     model.notify(p.first)
                     Pair(p.first, modelTokens(p.second))
@@ -122,7 +122,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
     }
 
     fun modelFile(f: File): List<List<Double>>? {
-        if (!this.tokenizerWrapper.willLexFile(f))
+        if (!tokenizerWrapper.willLexFile(f))
             return null
 
         model.notify(f)
@@ -192,7 +192,8 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
     fun predictFile(f: File): List<List<Double>>? {
         if (!tokenizerWrapper.willLexFile(f))
             return null
-        this.model.notify(f)
+
+        model.notify(f)
         return predictTokens(tokenizerWrapper.lexFile(f))
     }
 

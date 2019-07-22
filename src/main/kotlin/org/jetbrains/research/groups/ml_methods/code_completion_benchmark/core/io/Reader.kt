@@ -52,7 +52,7 @@ object Reader {
 
         var reading = true
 
-        while (reading) {
+        while (reading){
             line = br.readLine()
             if (line == null)
                 reading = false

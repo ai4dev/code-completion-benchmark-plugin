@@ -3,7 +3,6 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.
 import java.io.*
 import java.nio.charset.StandardCharsets
 
-
 object Writer {
 
     fun writeContent(file: File, content: String) {
