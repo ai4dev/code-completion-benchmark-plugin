@@ -21,13 +21,13 @@ interface Model {
 
     fun getConfidence(input: List<Int>, index: Int): Double = 0.0
 
-    fun model(input: List<Int>): List<Pair<Double, Double>>
+    fun model(input: List<Int>): List<Prediction>
 
-    fun modelToken(input: List<Int>, index: Int): Pair<Double, Double>
+    fun modelToken(input: List<Int>, index: Int): Prediction
 
-    fun predict(input: List<Int>): List<Map<Int, Pair<Double, Double>>>
+    fun predict(input: List<Int>): List<Map<Int, Prediction>>
 
-    fun predictToken(input: List<Int>, index: Int): Map<Int, Pair<Double, Double>>
+    fun predictToken(input: List<Int>, index: Int): Map<Int, Prediction>
 
     fun save(directory: File)
 

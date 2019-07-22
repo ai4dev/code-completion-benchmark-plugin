@@ -34,7 +34,7 @@ abstract class BaseModel : Model {
         pauseDynamic()
 
         val confidence = predictAtIndex(input, index)
-                .map { it.value.first }
+                .map { it.value.probability }
                 .sortedByDescending { it }
                 .take(1)
                 .sum()
@@ -43,26 +43,26 @@ abstract class BaseModel : Model {
         return confidence
     }
 
-    override fun model(input: List<Int>): List<Pair<Double, Double>> {
+    override fun model(input: List<Int>): List<Prediction> {
         return (0 until input.size)
                 .map { modelToken(input, it) }
     }
 
-    override fun modelToken(input: List<Int>, index: Int): Pair<Double, Double> {
+    override fun modelToken(input: List<Int>, index: Int): Prediction {
         return modelAtIndex(input, index)
                 .also {
                     if (dynamic) learnToken(input, index)
                 }
     }
 
-    override fun predict(input: List<Int>): List<Map<Int, Pair<Double, Double>>> {
+    override fun predict(input: List<Int>): List<Map<Int, Prediction>> {
         return (0 until input.size)
                 .map { predictToken(input, it) }
     }
 
-    abstract fun modelAtIndex(input: List<Int>, index: Int): Pair<Double, Double>
+    abstract fun modelAtIndex(input: List<Int>, index: Int): Prediction
 
-    override fun predictToken(input: List<Int>, index: Int): Map<Int, Pair<Double, Double>> {
+    override fun predictToken(input: List<Int>, index: Int): Map<Int, Prediction> {
         val temp = dynamic
         dynamic = false
 
@@ -74,6 +74,6 @@ abstract class BaseModel : Model {
         return predictions
     }
 
-    abstract fun predictAtIndex(input: List<Int>?, index: Int): Map<Int, Pair<Double, Double>>
+    abstract fun predictAtIndex(input: List<Int>?, index: Int): Map<Int, Prediction>
 
 }
