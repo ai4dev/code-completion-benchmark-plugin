@@ -4,9 +4,9 @@ import java.io.File
 
 interface Model {
 
-    fun notify(next: File)
-
     var dynamic: Boolean
+
+    fun notify(next: File)
 
     fun pauseDynamic()
     fun unPauseDynamic()
@@ -21,13 +21,13 @@ interface Model {
 
     fun getConfidence(input: List<Int>, index: Int): Double = 0.0
 
-    fun model(input: List<Int>): List<Prediction>
+    fun model(input: List<Int>): List<ConfPrediction>
 
-    fun modelToken(input: List<Int>, index: Int): Prediction
+    fun modelToken(input: List<Int>, index: Int): ConfPrediction
 
-    fun predict(input: List<Int>): List<Map<Int, Prediction>>
+    fun predict(input: List<Int>): List<Map<Int, ConfPrediction>>
 
-    fun predictToken(input: List<Int>, index: Int): Map<Int, Prediction>
+    fun predictToken(input: List<Int>, index: Int): Map<Int, ConfPrediction>
 
     fun save(directory: File)
 

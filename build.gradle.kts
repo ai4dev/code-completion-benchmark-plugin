@@ -23,6 +23,7 @@ intellij {
 }
 
 dependencies {
+    compile("org.jboss.marshalling", "jboss-marshalling", "2.0.7.Final")
     implementation(kotlin("stdlib-jdk8"))
 }
 

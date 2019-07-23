@@ -1,7 +1,7 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.runners
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.Model
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.Prediction
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.ConfPrediction
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.wrappers.TokenizerWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
 import java.io.File
@@ -244,22 +244,22 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         return mrrs
     }
 
-    fun toProb(probConfs: List<Prediction>): List<Double> {
+    fun toProb(probConfs: List<ConfPrediction>): List<Double> {
         return probConfs.map { toProb(it) }
     }
 
-    fun toProb(probConf: Prediction): Double {
+    fun toProb(probConf: ConfPrediction): Double {
         val prob = probConf.probability
         val conf = probConf.confidence
         return prob * conf + (1 - conf) / vocabulary.size()
     }
 
-    fun toPredictions(probConfs: List<Map<Int, Prediction>>): List<List<Int>> {
+    fun toPredictions(probConfs: List<Map<Int, ConfPrediction>>): List<List<Int>> {
         return probConfs.map { toPredictions(it) }
 
     }
 
-    fun toPredictions(probConf: Map<Int, Prediction>): List<Int> {
+    fun toPredictions(probConf: Map<Int, ConfPrediction>): List<Int> {
         return probConf
                 .map { Pair(it.key, toProb(it.value)) }
                 .sortedByDescending { it.second }
