@@ -3,7 +3,7 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actio
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.utils.ScratchUtils
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.tokenizers.JavaTokenizer
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.tokenizers.JavaTokenizer
 
 class TokenizeFileAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {

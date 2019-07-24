@@ -1,9 +1,9 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.ngrams
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.ngrams
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.Counter
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.storage.MapTrieCounter
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.ConfPrediction
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.runners.ModelRunner
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.Counter
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.storage.MapTrieCounter
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.runners.ModelRunner
 import java.io.File
 
 class JMModel(

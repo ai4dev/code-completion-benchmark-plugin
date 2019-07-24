@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter
 
 import java.io.Externalizable
 import java.util.function.Consumer

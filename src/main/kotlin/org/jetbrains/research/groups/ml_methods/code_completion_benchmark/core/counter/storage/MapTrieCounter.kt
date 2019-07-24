@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.storage
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.storage
 
 import java.io.ObjectInput
 import java.io.ObjectOutput

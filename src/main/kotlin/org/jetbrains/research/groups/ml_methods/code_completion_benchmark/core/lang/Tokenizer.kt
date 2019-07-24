@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang
 
 import java.io.File
 

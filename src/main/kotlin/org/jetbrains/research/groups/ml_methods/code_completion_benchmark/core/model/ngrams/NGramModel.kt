@@ -1,15 +1,15 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.ngrams
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.ngrams
 
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.Counter
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.io.CounterIO
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.storage.MapTrieCounter
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.BaseModel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.Model
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.ConfPrediction
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.runners.ModelRunner
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.sequencing.NGramSequencer
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.Counter
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.io.CounterIO
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.storage.MapTrieCounter
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.BaseModel
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.runners.ModelRunner
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.sequencer.NGramSequencer
 import java.io.File
 import java.util.HashSet
 import java.util.stream.Collectors

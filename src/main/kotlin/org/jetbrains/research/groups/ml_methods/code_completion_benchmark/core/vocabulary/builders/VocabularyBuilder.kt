@@ -1,7 +1,7 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.builders
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Reader
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.wrappers.TokenizerWrapper
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
 import java.io.*
 import java.nio.charset.StandardCharsets
@@ -37,7 +37,7 @@ object VocabularyBuilder {
             }
         }
 
-        vocabulary.store(Vocabulary.UNK, vocabulary.getCount(Vocabulary.UNK)!! + unkCount)
+        vocabulary.store(Vocabulary.UNKNOWN_TOKEN, vocabulary.getCount(Vocabulary.UNKNOWN_TOKEN)!! + unkCount)
 
         return vocabulary
     }

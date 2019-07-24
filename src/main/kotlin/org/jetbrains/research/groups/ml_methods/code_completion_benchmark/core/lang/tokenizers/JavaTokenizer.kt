@@ -1,9 +1,9 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.tokenizers
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.tokenizers
 
 import com.intellij.lang.java.lexer.JavaLexer
 import com.intellij.pom.java.LanguageLevel
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Reader
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.Tokenizer
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.Tokenizer
 import java.io.File
 import java.util.*
 

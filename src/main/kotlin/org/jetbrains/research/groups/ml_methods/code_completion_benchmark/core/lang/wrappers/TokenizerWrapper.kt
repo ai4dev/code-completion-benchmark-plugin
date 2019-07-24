@@ -1,7 +1,7 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.wrappers
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Writer
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.Tokenizer
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.Tokenizer
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
 import java.io.File
 import java.io.IOException
@@ -50,7 +50,7 @@ class TokenizerWrapper(val tokenizer: Tokenizer, val isPerLine: Boolean) {
         val lexed = tokenizer.tokenizeLine(line)
 
         return when (sentenceMarkers) {
-            true  -> sequenceOf(Vocabulary.BOS) + (lexed + sequenceOf(Vocabulary.EOS))
+            true  -> sequenceOf(Vocabulary.BEGIN_STRING) + (lexed + sequenceOf(Vocabulary.END_STRING))
             false -> lexed
         }
     }
@@ -96,8 +96,8 @@ class TokenizerWrapper(val tokenizer: Tokenizer, val isPerLine: Boolean) {
 
     private fun lexWithDelimiters(lexed: Sequence<Sequence<String>>): Sequence<Sequence<String>> {
         return when (isPerLine) {
-            true  -> lexed.map { sequenceOf(Vocabulary.BOS) + it + sequenceOf(Vocabulary.EOS) }
-            false -> sequenceOf(sequenceOf(Vocabulary.BOS)) + lexed + sequenceOf(sequenceOf(Vocabulary.EOS))
+            true  -> lexed.map { sequenceOf(Vocabulary.BEGIN_STRING) + it + sequenceOf(Vocabulary.END_STRING) }
+            false -> sequenceOf(sequenceOf(Vocabulary.BEGIN_STRING)) + lexed + sequenceOf(sequenceOf(Vocabulary.END_STRING))
         }
 
     }

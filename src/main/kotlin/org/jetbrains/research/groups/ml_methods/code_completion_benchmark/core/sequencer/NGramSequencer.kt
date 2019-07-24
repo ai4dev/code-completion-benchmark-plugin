@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.sequencing
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.sequencer
 
 import java.util.*
 import kotlin.math.max

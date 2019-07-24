@@ -1,8 +1,8 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.runners
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.runners
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.Model
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base.ConfPrediction
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.tokenization.wrappers.TokenizerWrapper
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
 import java.io.File
 import java.io.IOException

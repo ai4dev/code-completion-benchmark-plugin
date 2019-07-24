@@ -4,6 +4,10 @@ import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 
+fun List<String>.clearSentenceMarkers(): List<String> {
+    return this.filter { it !in listOf(Vocabulary.BEGIN_STRING, Vocabulary.END_STRING) }
+}
+
 open class Vocabulary : Serializable {
 
     val wordIndices: MutableMap<String, Int> = HashMap()
@@ -19,8 +23,8 @@ open class Vocabulary : Serializable {
     }
 
     private fun addUnk() {
-        wordIndices[UNK] = 0
-        words.add(UNK)
+        wordIndices[UNKNOWN_TOKEN] = 0
+        words.add(UNKNOWN_TOKEN)
         counts.add(0)
     }
 
@@ -76,7 +80,7 @@ open class Vocabulary : Serializable {
         val index: Int? = wordIndices[token]
         index ?: run {
             return if (closed) {
-                wordIndices[UNK]!!
+                wordIndices[UNKNOWN_TOKEN]!!
             } else {
                 val idx = wordIndices.size
                 wordIndices[token] = idx
@@ -110,8 +114,8 @@ open class Vocabulary : Serializable {
     }
 
     companion object {
-        const val UNK = "<UNK>"
-        const val BOS = "<s>"
-        const val EOS = "</s>"
+        const val UNKNOWN_TOKEN = "<unk>"
+        const val BEGIN_STRING = "<s>"
+        const val END_STRING = "</s>"
     }
 }

@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.io
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.io
 
 import java.io.File
 import java.io.FileInputStream
@@ -8,7 +8,7 @@ import java.io.IOException
 import org.jboss.marshalling.Marshalling
 import org.jboss.marshalling.MarshallingConfiguration
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.Counter
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.Counter
 
 object CounterIO {
 

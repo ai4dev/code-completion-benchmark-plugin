@@ -1,7 +1,7 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.storage
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.storage
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counting.Counter
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.runners.ModelRunner
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.Counter
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.runners.ModelRunner
 import java.io.ObjectInput
 import java.io.ObjectOutput
 import java.util.*

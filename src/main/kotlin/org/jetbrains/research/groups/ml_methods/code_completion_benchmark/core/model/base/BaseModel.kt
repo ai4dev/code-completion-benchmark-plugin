@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.modeling.base
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base
 
 abstract class BaseModel : Model {
 
