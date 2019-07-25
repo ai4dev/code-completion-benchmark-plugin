@@ -10,10 +10,21 @@
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.java</depends>
 
+    <extensionPoints>
+        <extensionPoint qualifiedName="org.jetbrains.research.groups.ml.methods.code.completion.benchmark.ngram.ngramElementProvider"
+                        interface="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.NGramElementProvider"/>
+    </extensionPoints>
+
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceInterface="com.intellij.codeInsight.completion.CompletionFinalSorter$Factory"
                             serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.sorting.CompletionSorterFactory"/>
     </extensions>
+
+    <extensions defaultExtensionNs="org.jetbrains.research.groups.ml.methods.code.completion.benchmark.ngram">
+        <ngramElementProvider
+                implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.lang.JavaNGramElementProvider"/>
+    </extensions>
+
     <actions>
         <group id="CompletionActions" text="Completion Test" popup="true">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
