@@ -24,6 +24,7 @@ intellij {
 
 dependencies {
     compile("org.jboss.marshalling", "jboss-marshalling", "2.0.7.Final")
+    compile("org.jetbrains.kotlin", "kotlin-reflect", "1.3.41")
     implementation(kotlin("stdlib-jdk8"))
 }
 

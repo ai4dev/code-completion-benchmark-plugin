@@ -1,12 +1,13 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.runners
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
+import com.intellij.lang.java.JavaLanguage
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFile
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
 import java.io.File
-import java.io.IOException
-import java.nio.file.Files
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.math.ln
@@ -29,7 +30,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         return ModelRunner(model, tokenizerWrapper, vocabulary)
     }
 
-    fun learnDirectory(file: File) {
+    fun learnDirectory(file: PsiDirectory) {
         learnStats = longArrayOf(0, -System.currentTimeMillis())
         tokenizerWrapper.lexDirectory(file)!!
                 .forEach { p ->
@@ -44,16 +45,12 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         }
     }
 
-    fun learnFile(f: File) {
+    fun learnFile(f: PsiFile) {
         if (!tokenizerWrapper.willLexFile(f))
             return
 
         model.notify(f)
         learnTokens(tokenizerWrapper.lexFile(f))
-    }
-
-    fun learnContent(content: String) {
-        learnTokens(tokenizerWrapper.lexText(content))
     }
 
     fun learnTokens(lexed: Sequence<Sequence<String>>) {
@@ -72,28 +69,18 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         }
     }
 
-    fun forgetDirectory(file: File) {
-        try {
-            Files.walk(file.toPath())
-                    .map { it.toFile() }
-                    .filter { it.isFile }
-                    .forEach { forgetFile(it) }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
+    fun forgetDirectory(file: PsiDirectory) {
+        file.files
+                .filter { it.language == JavaLanguage.INSTANCE }
+                .forEach { forgetFile(it) }
     }
 
-    fun forgetFile(f: File) {
+    fun forgetFile(f: PsiFile) {
         if (!tokenizerWrapper.willLexFile(f))
             return
 
         model.notify(f)
         forgetTokens(tokenizerWrapper.lexFile(f))
-    }
-
-    fun forgetContent(content: String) {
-        forgetTokens(tokenizerWrapper.lexText(content))
     }
 
     fun forgetTokens(lexed: Sequence<Sequence<String>>) {
@@ -110,26 +97,22 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         }
     }
 
-    fun modelDirectory(file: File): Sequence<Pair<File, List<List<Double>>>> {
+    fun modelDirectory(file: PsiDirectory): Sequence<Pair<PsiFile, List<List<Double>>>> {
         modelStats = longArrayOf(0, -System.currentTimeMillis())
         ent = 0.0
         return tokenizerWrapper.lexDirectory(file)!!
                 .map { p ->
                     model.notify(p.first)
                     Pair(p.first, modelTokens(p.second))
-                }
+                }.asSequence()
     }
 
-    fun modelFile(f: File): List<List<Double>>? {
+    fun modelFile(f: PsiFile): List<List<Double>>? {
         if (!tokenizerWrapper.willLexFile(f))
             return null
 
         model.notify(f)
         return modelTokens(tokenizerWrapper.lexFile(f))
-    }
-
-    fun modelContent(content: String): List<List<Double>> {
-        return modelTokens(tokenizerWrapper.lexText(content))
     }
 
     fun modelTokens(lexed: Sequence<Sequence<String>>): List<List<Double>> {
@@ -177,7 +160,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         return entropies
     }
 
-    fun predict(file: File): Sequence<Pair<File, List<List<Double>>>> {
+    fun predict(file: PsiDirectory): Sequence<Pair<PsiFile, List<List<Double>>>> {
         modelStats = longArrayOf(0, -System.currentTimeMillis())
         mrr = 0.0
 
@@ -185,10 +168,10 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
                 .map { p ->
                     model.notify(p.first)
                     Pair(p.first, predictTokens(p.second))
-                }
+                }.asSequence()
     }
 
-    fun predictFile(f: File): List<List<Double>>? {
+    fun predictFile(f: PsiFile): List<List<Double>>? {
         if (!tokenizerWrapper.willLexFile(f))
             return null
 
@@ -196,9 +179,6 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         return predictTokens(tokenizerWrapper.lexFile(f))
     }
 
-    fun predictContent(content: String): List<List<Double>> {
-        return predictTokens(tokenizerWrapper.lexText(content))
-    }
 
     fun predictTokens(lexed: Sequence<Sequence<String>>): List<List<Double>> {
         vocabulary.setCheckpoint()

@@ -1,5 +1,6 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.builders
 
+import com.intellij.psi.PsiDirectory
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Reader
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
@@ -16,13 +17,13 @@ object VocabularyBuilder {
             }
         }
 
-    fun build(tokenizerWrapper: TokenizerWrapper, root: File): Vocabulary {
+    fun build(tokenizerWrapper: TokenizerWrapper, root: PsiDirectory): Vocabulary {
         val vocabulary = Vocabulary()
 
         val counts = tokenizerWrapper
                 .lexDirectory(root)!!
-                .flatMap { it.second }
-                .flatMap { it }
+                .flatMap { it.second.asIterable() }
+                .flatMap { it.asIterable() }
                 .groupingBy { it }
                 .eachCount()
                 .mapKeys { it.key }

@@ -1,12 +1,13 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base
 
+import com.intellij.psi.PsiFile
 import java.io.File
 
 interface Model {
 
     var dynamic: Boolean
 
-    fun notify(next: File)
+    fun notify(next: PsiFile)
 
     fun pauseDynamic()
     fun unPauseDynamic()

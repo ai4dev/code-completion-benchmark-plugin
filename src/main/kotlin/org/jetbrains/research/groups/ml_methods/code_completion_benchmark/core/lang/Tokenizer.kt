@@ -1,19 +1,11 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang
 
-import java.io.File
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiFile
 
 interface Tokenizer {
+    fun tokenizeFile(file: PsiFile): Sequence<Sequence<String>>
 
-    fun tokenizeFile(file: File): Sequence<Sequence<String>>
-
-    fun tokenizeText(text: String): Sequence<Sequence<String>> {
-        return text
-                .split('\n')
-                .dropLastWhile { it.isEmpty() }
-                .map { this.tokenizeLine(it) }
-                .asSequence()
-    }
-
-    fun tokenizeLine(line: String): Sequence<String>
+    fun itemsToLines(items: List<ASTNode>): List<List<String>>
 }
 
