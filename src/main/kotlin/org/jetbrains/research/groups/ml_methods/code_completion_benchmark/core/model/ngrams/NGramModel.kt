@@ -2,20 +2,20 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.
 
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
+import com.intellij.psi.PsiFile
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.Counter
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.io.CounterIO
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.storage.MapTrieCounter
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.BaseModel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.runners.ModelRunner
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.sequencer.NGramSequencer
 import java.io.File
-import java.util.HashSet
-import java.util.stream.Collectors
-
 import java.io.FileReader
 import java.io.FileWriter
+import java.util.*
+import java.util.stream.Collectors
 import kotlin.math.pow
 
 abstract class NGramModel(
@@ -23,7 +23,7 @@ abstract class NGramModel(
         var counter: Counter = MapTrieCounter()
 ) : BaseModel() {
 
-    override fun notify(next: File) {}
+    override fun notify(next: PsiFile) {}
 
     override fun learn(input: List<Int>) {
         counter.countBatch(NGramSequencer.sequenceForward(input, order))
@@ -87,8 +87,8 @@ abstract class NGramModel(
 
     private fun prob(input: MutableList<Int>, index: Int, prediction: Int): ConfPrediction {
         val added = index == input.size
-        if (added)
-            input.add(0)
+        if (added) input.add(0)
+
         val prev = input.set(index, prediction)
         val prob = modelAtIndex(input, index)
         if (added)

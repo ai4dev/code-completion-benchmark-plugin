@@ -13,7 +13,7 @@ import com.intellij.ui.AppUIUtil
 import com.intellij.util.PathUtil
 
 object ScratchUtils {
-    fun concatLines(lines: List<List<String>>): String {
+    fun concatLines(lines: Sequence<Sequence<String>>): String {
         return lines
                 .joinToString(separator = "",
                               transform = { it.joinToString("|") })

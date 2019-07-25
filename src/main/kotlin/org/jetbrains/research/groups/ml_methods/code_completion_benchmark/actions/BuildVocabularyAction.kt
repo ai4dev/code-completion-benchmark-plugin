@@ -3,8 +3,8 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actio
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.PathManager
-import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.project.guessProjectDir
+import com.intellij.psi.PsiManager
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.tokenizers.JavaTokenizer
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.builders.VocabularyBuilder
@@ -13,9 +13,10 @@ import java.nio.file.Paths
 
 class BuildVocabularyAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
-        val doc = (event.dataContext.getData("fileEditor") as? TextEditor)?.editor?.document ?: return
-        val file = FileDocumentManager.getInstance().getFile(doc) ?: return
-        val vocab = VocabularyBuilder.build(TokenizerWrapper(JavaTokenizer(), true), File(file.path))
+        val proj = event.project ?: return
+        val projDir = proj.guessProjectDir() ?: return
+        val psiDir = PsiManager.getInstance(proj).findDirectory(projDir) ?: return
+        val vocab = VocabularyBuilder.build(TokenizerWrapper(JavaTokenizer(), true), psiDir)
         VocabularyBuilder.write(vocab, File(vocabPath.toString()))
     }
 

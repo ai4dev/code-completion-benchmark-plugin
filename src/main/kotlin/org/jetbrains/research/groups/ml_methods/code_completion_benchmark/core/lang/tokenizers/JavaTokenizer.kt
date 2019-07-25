@@ -1,37 +1,30 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.tokenizers
 
+import com.intellij.lang.ASTNode
 import com.intellij.lang.java.lexer.JavaLexer
 import com.intellij.pom.java.LanguageLevel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Reader
+import com.intellij.psi.PsiFile
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.Tokenizer
-import java.io.File
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.collectors.JavaASTCollector
 import java.util.*
 
 class JavaTokenizer : Tokenizer {
 
-    private val lexer = JavaLexer(LanguageLevel.JDK_1_8)
+    private val tokenCollector = JavaASTCollector
 
-    override fun tokenizeLine(line: String): Sequence<String> {
-        return tokenizeLines(line)[0].asSequence()
+    override fun tokenizeFile(file: PsiFile): Sequence<Sequence<String>> {
+        return itemsToLines(tokenCollector.getElements(file))
+                .asSequence()
+                .map { it.asSequence() }
     }
 
-    override fun tokenizeText(text: String): Sequence<Sequence<String>> {
-        return tokenizeLines(text).asSequence().map { it.asSequence() }
-    }
-
-    override fun tokenizeFile(file: File): Sequence<Sequence<String>> {
-        return tokenizeText(Reader.readLines(file).joinToString(System.lineSeparator()))
-    }
-
-    fun tokenizeLines(text: CharSequence): List<List<String>> {
-        lexer.start(text)
+    override fun itemsToLines(items: List<ASTNode>): List<List<String>> {
         val lineTokens = ArrayList<MutableList<String>>()
         val tokens = ArrayList<String>()
         lineTokens.add(ArrayList())
 
-        while (lexer.tokenType != null) {
-            var tokenText = lexer.tokenText
-
+        for (item in items) {
+            var tokenText = item.text
             if (tokenText.contains(System.lineSeparator())) {
                 lineTokens.add(ArrayList())
             }
@@ -78,8 +71,6 @@ class JavaTokenizer : Tokenizer {
 
             tokens.add(tokenText)
             lineTokens[lineTokens.size - 1].add(tokenText)
-
-            lexer.advance()
         }
         return lineTokens
     }
@@ -114,7 +105,7 @@ class JavaTokenizer : Tokenizer {
         }
 
         fun isKeyword(token: String): Boolean {
-            return JavaLexer.isKeyword(token, LanguageLevel.JDK_1_8)
+            return JavaLexer.isKeyword(token, LanguageLevel.HIGHEST)
         }
     }
 }

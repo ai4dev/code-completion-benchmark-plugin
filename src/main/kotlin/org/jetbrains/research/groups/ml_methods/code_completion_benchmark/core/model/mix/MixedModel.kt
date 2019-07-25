@@ -1,9 +1,10 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.mix
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
+import com.intellij.psi.PsiFile
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
 import java.io.File
-import java.util.HashMap
+import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 
@@ -16,16 +17,16 @@ abstract class MixedModel(var left: Model, var right: Model) : Model {
             field = value
         }
 
-    override fun notify(next: File) {
+    override fun notify(next: PsiFile) {
         notifyLeft(next)
         notifyRight(next)
     }
 
-    protected fun notifyLeft(next: File) {
+    protected fun notifyLeft(next: PsiFile) {
         left.notify(next)
     }
 
-    protected open fun notifyRight(next: File) {
+    protected open fun notifyRight(next: PsiFile) {
         right.notify(next)
     }
 
@@ -174,6 +175,7 @@ abstract class MixedModel(var left: Model, var right: Model) : Model {
             if (other == null) {
                 val added = index == input.size
                 if (added) input.add(0)
+
                 val prev = input.set(index, key)
                 other = modelRight(input, index)
                 if (added)
@@ -187,8 +189,7 @@ abstract class MixedModel(var left: Model, var right: Model) : Model {
             if (res1.containsKey(key)) continue
             val own = res2[key]
             val added = index == input.size
-            if (added)
-                input.add(0)
+            if (added) input.add(0)
 
             val prev = input.set(index, key)
             val other = modelLeft(input, index)

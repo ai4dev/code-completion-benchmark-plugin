@@ -1,10 +1,10 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.dynamic
 
+import com.intellij.psi.PsiFile
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.BaseModel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.ngrams.NGramModel
-
 import java.io.File
 import java.util.*
 
@@ -20,7 +20,7 @@ class CacheModel(
         dynamic = true
     }
 
-    override fun notify(next: File) {
+    override fun notify(next: PsiFile) {
         model = try {
             model.javaClass.getConstructor().newInstance()
         } catch (e: Exception) {
@@ -73,7 +73,6 @@ class CacheModel(
         return javaClass.simpleName
     }
 
-    //TODO save cache or not?
     override fun save(directory: File) {
         model.save(directory)
     }
