@@ -4,8 +4,8 @@ abstract class BaseModel : Model {
 
     override var dynamic = false
         set(value) {
-            field = value
             wasDynamic = value
+            field = value
         }
 
     private var wasDynamic = false
@@ -22,14 +22,6 @@ abstract class BaseModel : Model {
         }
     }
 
-    override fun learn(input: List<Int>) {
-        (0 until input.size).forEach { learnToken(input, it) }
-    }
-
-    override fun forget(input: List<Int>) {
-        (0 until input.size).forEach { forgetToken(input, it) }
-    }
-
     override fun getConfidence(input: List<Int>, index: Int): Double {
         pauseDynamic()
 
@@ -43,21 +35,10 @@ abstract class BaseModel : Model {
         return confidence
     }
 
-    override fun model(input: List<Int>): List<ConfPrediction> {
-        return (0 until input.size)
-                .map { modelToken(input, it) }
-    }
-
     override fun modelToken(input: List<Int>, index: Int): ConfPrediction {
-        return modelAtIndex(input, index)
-                .also {
-                    if (dynamic) learnToken(input, index)
-                }
-    }
-
-    override fun predict(input: List<Int>): List<Map<Int, ConfPrediction>> {
-        return (0 until input.size)
-                .map { predictToken(input, it) }
+        val modeled = modelAtIndex(input, index)
+        if (dynamic) learnToken(input, index)
+        return modeled
     }
 
     abstract fun modelAtIndex(input: List<Int>, index: Int): ConfPrediction
@@ -69,11 +50,9 @@ abstract class BaseModel : Model {
         val predictions = predictAtIndex(input, index)
 
         dynamic = temp
-        if (dynamic) learnToken(input, index)
-
+        if (dynamic) modelToken(input, index)
         return predictions
     }
 
-    abstract fun predictAtIndex(input: List<Int>?, index: Int): Map<Int, ConfPrediction>
-
+    abstract fun predictAtIndex(input: List<Int>, index: Int): Map<Int, ConfPrediction>
 }

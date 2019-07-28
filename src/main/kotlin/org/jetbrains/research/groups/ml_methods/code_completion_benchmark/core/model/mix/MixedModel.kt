@@ -1,8 +1,10 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.mix
 
 import com.intellij.psi.PsiFile
+
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
+
 import java.io.File
 import java.util.*
 import java.util.stream.Collectors

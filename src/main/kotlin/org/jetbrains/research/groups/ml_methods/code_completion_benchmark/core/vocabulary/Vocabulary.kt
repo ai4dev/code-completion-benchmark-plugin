@@ -1,12 +1,6 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary
 
 import java.io.Serializable
-import java.util.*
-import kotlin.collections.HashMap
-
-fun List<String>.clearSentenceMarkers(): List<String> {
-    return this.filter { it !in listOf(Vocabulary.BEGIN_STRING, Vocabulary.END_STRING) }
-}
 
 open class Vocabulary : Serializable {
 
@@ -54,17 +48,14 @@ open class Vocabulary : Serializable {
 
     fun store(token: String, count: Int = 1): Int {
         var index: Int? = wordIndices[token]
-
-        index?.let { idx ->
-            counts[idx] = count
-            return idx
+        if (index == null) {
+            index = wordIndices.size
+            wordIndices[token] = index
+            words.add(token)
+            counts.add(count)
+        } else {
+            counts[index] = count
         }
-
-        index = wordIndices.size
-        wordIndices[token] = index
-        words.add(token)
-        counts.add(count)
-
         return index
     }
 
@@ -77,19 +68,18 @@ open class Vocabulary : Serializable {
     }
 
     fun toIndex(token: String): Int {
-        val index: Int? = wordIndices[token]
-        index ?: run {
-            return if (closed) {
-                wordIndices[UNKNOWN_TOKEN]!!
+        var index: Int? = wordIndices[token]
+        if (index == null) {
+            if (closed) {
+                return wordIndices[UNKNOWN_TOKEN]!!
             } else {
-                val idx = wordIndices.size
-                wordIndices[token] = idx
+                index = wordIndices.size
+                wordIndices[token] = index
                 words.add(token)
                 counts.add(1)
-                idx
             }
         }
-        return index!!
+        return index
     }
 
     fun getCount(token: String): Int? {

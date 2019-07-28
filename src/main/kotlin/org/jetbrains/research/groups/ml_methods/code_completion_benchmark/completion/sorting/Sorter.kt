@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.Pair
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.NGram
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.components.ModelComponent
 
 @Suppress("DEPRECATION")
 class CompletionSorterFactory : CompletionFinalSorter.Factory {
@@ -15,6 +16,7 @@ class Sorter : CompletionFinalSorter() {
 
     private fun rankItems(items: MutableIterable<LookupElement>, nGram: NGram): MutableIterable<LookupElement> {
         //TODO: implement ranking
+        val completions = ModelComponent.getNGramSuggestions(nGram)
         return items
     }
 

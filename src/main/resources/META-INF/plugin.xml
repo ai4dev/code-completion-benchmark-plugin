@@ -11,7 +11,7 @@
     <depends>com.intellij.modules.java</depends>
 
     <extensionPoints>
-        <extensionPoint qualifiedName="org.jetbrains.research.groups.ml.methods.code.completion.benchmark.ngram.ngramElementProvider"
+        <extensionPoint qualifiedName="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.ngramElementProvider"
                         interface="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.NGramElementProvider"/>
     </extensionPoints>
 
@@ -20,7 +20,7 @@
                             serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.sorting.CompletionSorterFactory"/>
     </extensions>
 
-    <extensions defaultExtensionNs="org.jetbrains.research.groups.ml.methods.code.completion.benchmark.ngram">
+    <extensions defaultExtensionNs="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram">
         <ngramElementProvider
                 implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.lang.JavaNGramElementProvider"/>
     </extensions>
@@ -45,4 +45,11 @@
                     relative-to-action="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFileAction"/>
         </action>
     </actions>
+    <project-components>
+        <component>
+            <implementation-class>
+                org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.components.ModelComponent
+            </implementation-class>
+        </component>
+    </project-components>
 </idea-plugin>

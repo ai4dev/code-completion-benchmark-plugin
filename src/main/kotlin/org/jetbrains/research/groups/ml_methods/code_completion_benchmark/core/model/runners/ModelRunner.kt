@@ -3,18 +3,28 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.
 import com.intellij.lang.java.JavaLanguage
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
+
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.NGram
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Completion
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
+
 import java.io.File
 import java.util.*
 import java.util.stream.Collectors
+import java.util.stream.IntStream
 import kotlin.math.ln
 import kotlin.math.roundToInt
 import kotlin.streams.asStream
 
-class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val vocabulary: Vocabulary) {
+
+class ModelRunner(
+        val model: Model,
+        val tokenizerWrapper: TokenizerWrapper,
+        val vocabulary: Vocabulary
+) {
 
     var selfTesting = false
 
@@ -39,7 +49,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
                 }
         if (learnStats[0] > LEARN_PRINT_INTERVAL && learnStats[1] != 0L) {
             println(
-                "Counting complete: ${learnStats[0]} tokens processed " +
+                "Counting complete: ${learnStats[0]}M tokens processed " +
                         "in ${(System.currentTimeMillis() + learnStats[1]) / 1000}s\n"
             )
         }
@@ -243,7 +253,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         return probConf
                 .map { Pair(it.key, toProb(it.value)) }
                 .sortedByDescending { it.second }
-                .take(predictionCutOff)
+                .take(GLOBAL_PREDICTION_CUTOFF.toInt())
                 .map { it.first }
     }
 
@@ -340,6 +350,67 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         }
     }
 
+    fun completeDirectory(file: PsiDirectory): Sequence<Pair<PsiFile, List<List<Completion>>>> {
+        this.modelStats = longArrayOf(0, -System.currentTimeMillis())
+        this.mrr = 0.0
+        return tokenizerWrapper.lexDirectory(file)!!.asSequence()
+                .map { p ->
+                    model.notify(p.first)
+                    Pair(p.first, completeTokens(p.second))
+                }
+    }
+
+    fun completeFile(f: PsiFile): List<List<Completion>>? {
+        if (!tokenizerWrapper.willLexFile(f)) return null
+        model.notify(f)
+        return completeTokens(tokenizerWrapper.lexFile(f))
+    }
+
+    fun completeTokens(lexed: Sequence<Sequence<String>>): List<List<Completion>> {
+        val lineCompletions: List<List<Completion>>
+        if (tokenizerWrapper.isPerLine) {
+            lineCompletions = lexed
+                    .map { vocabulary.toIndices(it) }
+                    .map { line -> completeSequence(line) }
+                    .asStream()
+                    .collect(Collectors.toList())
+        } else {
+            val lineLengths = ArrayList<Int>()
+            val commpletions = completeSequence(
+                lexed
+                        .map { vocabulary.toIndices(it).asStream() }
+                        .map { l -> l.collect(Collectors.toList()) }
+                        .onEach { l -> lineLengths.add(l.size) }
+                        .flatMap { it.asSequence() }
+            )
+            lineCompletions = toLines(commpletions, lineLengths)
+        }
+        return lineCompletions
+    }
+
+    protected fun completeSequence(tokens: Sequence<Int>): List<Completion> {
+        val tokenss = tokens.asStream().collect(Collectors.toList())
+        if (selfTesting) model.forget(tokenss)
+        val preds = model.predict(tokenss)
+        if (this.selfTesting) model.learn(tokenss)
+        return IntStream.range(0, preds.size)
+                .mapToObj { i ->
+                    val completions = preds[i].entries.stream()
+                            .map { e -> Pair(e.key, toProb(e.value)) }
+                            .sorted { p1, p2 -> -p1.second.compareTo(p2.second) }
+                            .limit(GLOBAL_PREDICTION_CUTOFF)
+                            .collect(Collectors.toList())
+                    Completion(tokenss[i], completions)
+                }.collect(Collectors.toList())
+    }
+
+    fun completeNGram(nGram: NGram): List<Pair<Int, Double>> {
+        val elements = nGram.elements.asSequence()
+        val tokens = vocabulary.toIndices(elements)
+        val completions = completeSequence(tokens).lastOrNull() ?: return emptyList()
+        return completions.predictions
+    }
+
     companion object {
         //TODO: remove after testing
         private const val LEARN_PRINT_INTERVAL: Long = 1000000
@@ -348,7 +419,7 @@ class ModelRunner(val model: Model, val tokenizerWrapper: TokenizerWrapper, val 
         private val INV_NEG_LOG_2 = -1.0 / ln(2.0)
         const val DEFAULT_NGRAM_ORDER = 6
 
-        var predictionCutOff = 10
+        const val GLOBAL_PREDICTION_CUTOFF = 10L
 
         fun toEntropy(probability: Double): Double {
             return ln(probability) * INV_NEG_LOG_2

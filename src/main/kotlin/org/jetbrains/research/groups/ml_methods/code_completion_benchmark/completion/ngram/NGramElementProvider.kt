@@ -6,17 +6,19 @@ import com.intellij.openapi.fileTypes.FileType
 
 interface NGramElementProvider {
 
-    fun getSupportedFileTypes() : Set<FileType>
+    fun getSupportedFileTypes(): Set<FileType>
 
-    fun getElementRepresentation(element: ASTNode) : String
+    fun getElementRepresentation(element: ASTNode): String
 
     fun shouldIndex(element: ASTNode, content: CharSequence): Boolean
 
     companion object {
 
-        val EP_NAME = ExtensionPointName.create<NGramElementProvider>("org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.ngramElementProvider")
+        private val EP_NAME = ExtensionPointName.create<NGramElementProvider>(
+            "org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.ngramElementProvider"
+        )
 
-        fun getSupportedFileTypes() : Set<FileType>  {
+        fun getSupportedFileTypes(): Set<FileType>  {
             return ExtensionPointName<NGramElementProvider>(EP_NAME.name)
                     .extensionList
                     .flatMap { it.getSupportedFileTypes() }
