@@ -3,32 +3,33 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram
 import com.intellij.lang.java.JavaLanguage
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
+
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.tokenizers.JavaTokenizer
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Completion
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.PredictionWithConf
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.mix.InverseMixModel
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.beans.Prediction
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.model.ModelRunner
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.model.ModelWrapper
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.model.AbstractModelRunner
+
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.math.ln
 import kotlin.streams.asStream
 
-class NGramModelRunner : ModelRunner<InverseMixModel> {
+class NGramModelRunner : AbstractModelRunner<InverseMixModel>() {
     override val id: String = NGramModelRunner::class.java.name
 
-    override val modelWrapper: ModelWrapper<InverseMixModel> = NGramModelWrapper()
-    private val vocabularyWrapper = NGramVocabularyWrapper()
+    override val modelWrapper = NGramModelWrapper()
+    override val vocabularyWrapper = NGramVocabularyWrapper()
 
     private var tokenizerWrapper = TokenizerWrapper(JavaTokenizer(), true)
     private var selfTesting = false
 
     override fun getCodeSuggestion(codePiece: Any): Prediction? {
         val queryIndices = vocabularyWrapper.translateCodePiece(codePiece)
-        val prediction = modelWrapper.model.predictToken(queryIndices.toList(), queryIndices.count() - 1)
+        val prediction = modelWrapper.predictToken(queryIndices.toList(), queryIndices.count() - 1)
                 .toList()
                 .maxBy { (_, value) -> value.probability }!!
 
@@ -38,7 +39,7 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
     override fun getTopNCodeSuggestions(codePiece: Any, maxNumberOfSuggestions: Int): List<Prediction> {
         val queryIndices = vocabularyWrapper.translateCodePiece(codePiece)
 
-        return modelWrapper.model.predictToken(queryIndices.toList(), queryIndices.count() - 1)
+        return modelWrapper.predictToken(queryIndices.toList(), queryIndices.count() - 1)
                 .toList()
                 .map { (key, value) -> Prediction(vocabularyWrapper.translateTokenBack(key), value.probability) }
                 .sortedByDescending { (_, value) -> value }
@@ -48,7 +49,7 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
     fun learnDirectory(file: PsiDirectory) {
         tokenizerWrapper.lexDirectory(file)!!
                 .forEach { p ->
-                    modelWrapper.model.notify(p.first)
+                    modelWrapper.notify(p.first)
                     learnTokenSequence(p.second)
                 }
     }
@@ -57,18 +58,18 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
         if (!tokenizerWrapper.willLexFile(f))
             return
 
-        modelWrapper.model.notify(f)
+        modelWrapper.notify(f)
         learnTokenSequence(tokenizerWrapper.lexFile(f))
     }
 
-    fun learnTokenSequence(lexed: Sequence<Sequence<String>>) {
+    private fun learnTokenSequence(lexed: Sequence<Sequence<String>>) {
         if (tokenizerWrapper.isPerLine) {
             lexed
                     .map { vocabularyWrapper.translateCodePiece(it) }
                     .map { it.toList() }
-                    .forEach { modelWrapper.model.learn(it) }
+                    .forEach { modelWrapper.learn(it) }
         } else {
-            modelWrapper.model.learn(lexed
+            modelWrapper.learn(lexed
                     .flatMap { vocabularyWrapper.translateCodePiece(it).asSequence() }
                     .toList()
             )
@@ -85,17 +86,17 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
         if (!tokenizerWrapper.willLexFile(f))
             return
 
-        modelWrapper.model.notify(f)
+        modelWrapper.notify(f)
         forgetTokenSequence(tokenizerWrapper.lexFile(f))
     }
 
-    fun forgetTokenSequence(lexed: Sequence<Sequence<String>>) {
+    private fun forgetTokenSequence(lexed: Sequence<Sequence<String>>) {
         if (tokenizerWrapper.isPerLine) {
             lexed.map { vocabularyWrapper.translateCodePiece(it) }
                     .map { it.toList() }
-                    .forEach { modelWrapper.model.forget(it) }
+                    .forEach { modelWrapper.forget(it) }
         } else {
-            modelWrapper.model.forget(
+            modelWrapper.forget(
                 lexed
                         .flatMap { vocabularyWrapper.translateCodePiece(it).asSequence() }
                         .toList()
@@ -106,7 +107,7 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
     fun modelDirectory(file: PsiDirectory): Sequence<Pair<PsiFile, List<List<Double>>>> {
         return tokenizerWrapper.lexDirectory(file)!!
                 .map { p ->
-                    modelWrapper.model.notify(p.first)
+                    modelWrapper.notify(p.first)
                     Pair(p.first, modelTokenSequence(p.second))
                 }.asSequence()
     }
@@ -115,11 +116,11 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
         if (!tokenizerWrapper.willLexFile(f))
             return null
 
-        modelWrapper.model.notify(f)
+        modelWrapper.notify(f)
         return modelTokenSequence(tokenizerWrapper.lexFile(f))
     }
 
-    fun modelTokenSequence(lexed: Sequence<Sequence<String>>): List<List<Double>> {
+    private fun modelTokenSequence(lexed: Sequence<Sequence<String>>): List<List<Double>> {
         vocabularyWrapper
         val lineProbs: List<List<Double>>
 
@@ -148,15 +149,15 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
     }
 
     private fun modelTokens(tokens: List<Int>): List<Double> {
-        if (selfTesting) modelWrapper.model.forget(tokens)
+        if (selfTesting) modelWrapper.forget(tokens)
 
-        val entropies = modelWrapper.model.model(tokens).stream()
+        val entropies = modelWrapper.model(tokens).stream()
                 .map { PredictionWithConf.toProb(it, vocabularyWrapper.getVocabularySize()) }
                 .map { toEntropy(it) }
                 .collect(Collectors.toList())
 
         if (selfTesting)
-            modelWrapper.model.learn(tokens)
+            modelWrapper.learn(tokens)
 
         return entropies
     }
@@ -164,7 +165,7 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
     fun predict(file: PsiDirectory): Sequence<Pair<PsiFile, List<List<Double>>>> {
         return tokenizerWrapper.lexDirectory(file)!!
                 .map { p ->
-                    modelWrapper.model.notify(p.first)
+                    modelWrapper.notify(p.first)
                     Pair(p.first, predictTokenSequence(p.second))
                 }.asSequence()
     }
@@ -173,12 +174,12 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
         if (!tokenizerWrapper.willLexFile(f))
             return null
 
-        modelWrapper.model.notify(f)
+        modelWrapper.notify(f)
         return predictTokenSequence(tokenizerWrapper.lexFile(f))
     }
 
 
-    fun predictTokenSequence(lexed: Sequence<Sequence<String>>): List<List<Double>> {
+    private fun predictTokenSequence(lexed: Sequence<Sequence<String>>): List<List<Double>> {
         vocabularyWrapper
 
         vocabularyWrapper.setCheckpoint()
@@ -207,16 +208,16 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
         return lineProbs
     }
 
-    protected fun predictTokens(tokens: List<Int>): List<Double> {
-        if (selfTesting) modelWrapper.model.forget(tokens)
+    private fun predictTokens(tokens: List<Int>): List<Double> {
+        if (selfTesting) modelWrapper.forget(tokens)
 
-        val preds = toPredictions(modelWrapper.model.predict(tokens))
+        val preds = toPredictions(modelWrapper.predict(tokens))
         val mrrs = (0 until tokens.size)
                 .map { preds[it].indexOf(tokens[it]) }
                 .map { toMRR(it) }
 
         if (selfTesting)
-            modelWrapper.model.learn(tokens)
+            modelWrapper.learn(tokens)
 
         return mrrs
     }
@@ -240,18 +241,18 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
     fun completeDirectory(file: PsiDirectory): Sequence<Pair<PsiFile, List<List<Completion>>>> {
         return tokenizerWrapper.lexDirectory(file)!!.asSequence()
                 .map { p ->
-                    modelWrapper.model.notify(p.first)
+                    modelWrapper.notify(p.first)
                     Pair(p.first, completeTokenSequence(p.second))
                 }
     }
 
     fun completeFile(f: PsiFile): List<List<Completion>>? {
         if (!tokenizerWrapper.willLexFile(f)) return null
-        modelWrapper.model.notify(f)
+        modelWrapper.notify(f)
         return completeTokenSequence(tokenizerWrapper.lexFile(f))
     }
 
-    fun completeTokenSequence(lexed: Sequence<Sequence<String>>): List<List<Completion>> {
+    private fun completeTokenSequence(lexed: Sequence<Sequence<String>>): List<List<Completion>> {
         val lineCompletions: List<List<Completion>>
         if (tokenizerWrapper.isPerLine) {
             lineCompletions = lexed
@@ -273,11 +274,11 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
         return lineCompletions
     }
 
-    protected fun completeTokens(tokens: Sequence<Int>): List<Completion> {
+    private fun completeTokens(tokens: Sequence<Int>): List<Completion> {
         val tokenss = tokens.asStream().collect(Collectors.toList())
-        if (selfTesting) modelWrapper.model.forget(tokenss)
-        val preds = modelWrapper.model.predict(tokenss)
-        if (this.selfTesting) modelWrapper.model.learn(tokenss)
+        if (selfTesting) modelWrapper.forget(tokenss)
+        val preds = modelWrapper.predict(tokenss)
+        if (this.selfTesting) modelWrapper.learn(tokenss)
         return IntStream.range(0, preds.size)
                 .mapToObj { i ->
                     val completions = preds[i].entries.stream()
@@ -310,7 +311,6 @@ class NGramModelRunner : ModelRunner<InverseMixModel> {
     companion object {
 
         private val INV_NEG_LOG_2 = -1.0 / ln(2.0)
-        const val DEFAULT_NGRAM_ORDER = 6
 
         const val GLOBAL_PREDICTION_CUTOFF = 10L
 
