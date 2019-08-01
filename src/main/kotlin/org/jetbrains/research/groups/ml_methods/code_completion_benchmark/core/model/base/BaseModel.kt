@@ -35,15 +35,15 @@ abstract class BaseModel : Model {
         return confidence
     }
 
-    override fun modelToken(input: List<Int>, index: Int): ConfPrediction {
+    override fun modelToken(input: List<Int>, index: Int): PredictionWithConf {
         val modeled = modelAtIndex(input, index)
         if (dynamic) learnToken(input, index)
         return modeled
     }
 
-    abstract fun modelAtIndex(input: List<Int>, index: Int): ConfPrediction
+    abstract fun modelAtIndex(input: List<Int>, index: Int): PredictionWithConf
 
-    override fun predictToken(input: List<Int>, index: Int): Map<Int, ConfPrediction> {
+    override fun predictToken(input: List<Int>, index: Int): Map<Int, PredictionWithConf> {
         val temp = dynamic
         dynamic = false
 
@@ -54,5 +54,5 @@ abstract class BaseModel : Model {
         return predictions
     }
 
-    abstract fun predictAtIndex(input: List<Int>, index: Int): Map<Int, ConfPrediction>
+    abstract fun predictAtIndex(input: List<Int>, index: Int): Map<Int, PredictionWithConf>
 }

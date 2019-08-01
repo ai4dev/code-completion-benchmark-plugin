@@ -5,7 +5,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.Tokenizer
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.TokenVocabulary
 
 class TokenizerWrapper(
         val tokenizer: Tokenizer,
@@ -44,9 +44,9 @@ class TokenizerWrapper(
 
     private fun lexWithDelimiters(lexed: Sequence<Sequence<String>>): Sequence<Sequence<String>> {
         return if (isPerLine)
-            lexed.map { sequenceOf(Vocabulary.BEGIN_STRING) + it + sequenceOf(Vocabulary.END_STRING) }
+            lexed.map { sequenceOf(TokenVocabulary.BEGIN_STRING) + it + sequenceOf(TokenVocabulary.END_STRING) }
         else
-            sequenceOf(sequenceOf(Vocabulary.BEGIN_STRING)) + lexed + sequenceOf(sequenceOf(Vocabulary.BEGIN_STRING))
+            sequenceOf(sequenceOf(TokenVocabulary.BEGIN_STRING)) + lexed + sequenceOf(sequenceOf(TokenVocabulary.BEGIN_STRING))
 
     }
 }

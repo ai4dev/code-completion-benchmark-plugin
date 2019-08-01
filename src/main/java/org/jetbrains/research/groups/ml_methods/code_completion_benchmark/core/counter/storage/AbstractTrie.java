@@ -1,7 +1,7 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.storage;
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.Counter;
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.runners.ModelRunner;
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.NGram;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class AbstractTrie implements Counter {
 
     static int COUNT_OF_COUNTS_CUTOFF = 3;
-    private volatile static int[][] nCounts = new int[ModelRunner.DEFAULT_NGRAM_ORDER][4];
+    private volatile static int[][] nCounts = new int[NGram.DEFAULT_NGRAM_ORDER][4];
 
     int[] counts;
 
@@ -24,7 +24,7 @@ public abstract class AbstractTrie implements Counter {
 
     private static void updateNCounts(int n, int count, int adj) {
         if (n == 0) return;
-        if (n > ModelRunner.DEFAULT_NGRAM_ORDER) return;
+        if (n > NGram.DEFAULT_NGRAM_ORDER) return;
 
         int[] toUpdate = nCounts[n - 1];
         int currIndex = Math.min(count, toUpdate.length);
@@ -308,10 +308,7 @@ public abstract class AbstractTrie implements Counter {
     }
 
     private void addArray(List<Integer> indices, int index, int adj) {
-        if (adj < 0) {
-            System.out.println("Attempting to forget unknown event: " + indices.subList(index, indices.size()));
-            return;
-        }
+        if (adj < 0) return;
 
         int[] singleton = new int[indices.size() - index];
         singleton[0] = adj;

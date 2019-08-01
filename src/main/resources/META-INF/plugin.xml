@@ -10,45 +10,51 @@
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.java</depends>
 
+    <depends>code-completion-benchmark-toolkit</depends>
+
     <extensionPoints>
-        <extensionPoint qualifiedName="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.ngramElementProvider"
-                        interface="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.NGramElementProvider"/>
+        <extensionPoint qualifiedName="completion.ngram.ngramElementProvider"
+                        interface="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.NGramElementProvider"/>
     </extensionPoints>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceInterface="com.intellij.codeInsight.completion.CompletionFinalSorter$Factory"
-                            serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.sorting.CompletionSorterFactory"/>
+                            serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram_completion.CompletionSorterFactory"/>
     </extensions>
 
-    <extensions defaultExtensionNs="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram">
+    <extensions defaultExtensionNs="completion.ngram">
         <ngramElementProvider
-                implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.lang.JavaNGramElementProvider"/>
+                implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.lang.JavaNGramElementProvider"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="code-completion-benchmark-toolkit">
+        <modelRunnerProvider implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram_completion.NGramModelRunnerProvider"/>
     </extensions>
 
     <actions>
         <group id="CompletionActions" text="Completion Test" popup="true">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </group>
-        <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFileAction"
-                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFileAction"
+        <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.TokenizeFileAction"
+                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.TokenizeFileAction"
                 text="Tokenize File">
             <add-to-group
                     group-id="CompletionActions"
                     anchor="first"/>
         </action>
-        <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.BuildVocabularyAction"
-                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.BuildVocabularyAction"
+        <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.BuildVocabularyAction"
+                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.BuildVocabularyAction"
                 text="Build Vocabulary for File">
             <add-to-group
                     group-id="CompletionActions"
                     anchor="after"
-                    relative-to-action="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.TokenizeFileAction"/>
+                    relative-to-action="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.TokenizeFileAction"/>
         </action>
     </actions>
     <project-components>
         <component>
             <implementation-class>
-                org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.components.ModelComponent
+                org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.components.NGramModelComponent
             </implementation-class>
         </component>
     </project-components>

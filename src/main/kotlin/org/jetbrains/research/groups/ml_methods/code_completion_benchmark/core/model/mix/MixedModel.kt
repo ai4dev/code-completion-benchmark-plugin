@@ -1,10 +1,8 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.mix
 
 import com.intellij.psi.PsiFile
-
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
-
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.PredictionWithConf
 import java.io.File
 import java.util.*
 import java.util.stream.Collectors
@@ -95,7 +93,7 @@ abstract class MixedModel(var left: Model, var right: Model) : Model {
         right.forgetToken(input, index)
     }
 
-    override fun model(input: List<Int>): List<ConfPrediction> {
+    override fun model(input: List<Int>): List<PredictionWithConf> {
         val modelL = modelLeft(input)
         val modelR = modelRight(input)
         return IntStream.range(0, input.size)
@@ -103,29 +101,29 @@ abstract class MixedModel(var left: Model, var right: Model) : Model {
                 .collect(Collectors.toList())
     }
 
-    protected fun modelLeft(input: List<Int>): List<ConfPrediction> {
+    protected fun modelLeft(input: List<Int>): List<PredictionWithConf> {
         return left.model(input)
     }
 
-    protected open fun modelRight(input: List<Int>): List<ConfPrediction> {
+    protected open fun modelRight(input: List<Int>): List<PredictionWithConf> {
         return right.model(input)
     }
 
-    override fun modelToken(input: List<Int>, index: Int): ConfPrediction {
+    override fun modelToken(input: List<Int>, index: Int): PredictionWithConf {
         val res1 = modelLeft(input, index)
         val res2 = modelRight(input, index)
         return mix(input, index, res1, res2)
     }
 
-    protected fun modelLeft(input: List<Int>, index: Int): ConfPrediction {
+    protected fun modelLeft(input: List<Int>, index: Int): PredictionWithConf {
         return left.modelToken(input, index)
     }
 
-    protected open fun modelRight(input: List<Int>, index: Int): ConfPrediction {
+    protected open fun modelRight(input: List<Int>, index: Int): PredictionWithConf {
         return right.modelToken(input, index)
     }
 
-    override fun predict(input: List<Int>): List<Map<Int, ConfPrediction>> {
+    override fun predict(input: List<Int>): List<Map<Int, PredictionWithConf>> {
         val predictL = predictLeft(input)
         val predictR = predictRight(input)
         return IntStream.range(0, input.size)
@@ -134,46 +132,46 @@ abstract class MixedModel(var left: Model, var right: Model) : Model {
     }
 
 
-    protected fun predictLeft(input: List<Int>): List<Map<Int, ConfPrediction>> {
+    protected fun predictLeft(input: List<Int>): List<Map<Int, PredictionWithConf>> {
         return left.predict(input)
     }
 
-    protected open fun predictRight(input: List<Int>): List<Map<Int, ConfPrediction>> {
+    protected open fun predictRight(input: List<Int>): List<Map<Int, PredictionWithConf>> {
         return right.predict(input)
     }
 
-    override fun predictToken(input: List<Int>, index: Int): Map<Int, ConfPrediction> {
+    override fun predictToken(input: List<Int>, index: Int): Map<Int, PredictionWithConf> {
         val res1 = predictLeft(input, index)
         val res2 = predictRight(input, index)
         return mix(input.toMutableList(), index, res1, res2)
     }
 
-    protected fun predictLeft(input: List<Int>, index: Int): Map<Int, ConfPrediction> {
+    protected fun predictLeft(input: List<Int>, index: Int): Map<Int, PredictionWithConf> {
         return left.predictToken(input, index)
     }
 
-    protected open fun predictRight(input: List<Int>, index: Int): Map<Int, ConfPrediction> {
+    protected open fun predictRight(input: List<Int>, index: Int): Map<Int, PredictionWithConf> {
         return right.predictToken(input, index)
     }
 
     protected abstract fun mix(
             input: List<Int>,
             index: Int,
-            res1: ConfPrediction,
-            res2: ConfPrediction
-    ): ConfPrediction
+            res1: PredictionWithConf,
+            res2: PredictionWithConf
+    ): PredictionWithConf
 
     protected fun mix(
             input: MutableList<Int>, index: Int,
-            res1: Map<Int, ConfPrediction>, res2: Map<Int, ConfPrediction>
-    ): Map<Int, ConfPrediction> {
-        val mixed = HashMap<Int, ConfPrediction>()
+            res1: Map<Int, PredictionWithConf>, res2: Map<Int, PredictionWithConf>
+    ): Map<Int, PredictionWithConf> {
+        val mixed = HashMap<Int, PredictionWithConf>()
         left.pauseDynamic()
         right.pauseDynamic()
 
         for (key in res1.keys) {
             val own = res1[key]
-            var other: ConfPrediction? = res2[key]
+            var other: PredictionWithConf? = res2[key]
             if (other == null) {
                 val added = index == input.size
                 if (added) input.add(0)

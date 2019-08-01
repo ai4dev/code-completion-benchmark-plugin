@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.extensions.ExtensionPointName
@@ -14,9 +14,7 @@ interface NGramElementProvider {
 
     companion object {
 
-        private val EP_NAME = ExtensionPointName.create<NGramElementProvider>(
-            "org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram.ngramElementProvider"
-        )
+        private val EP_NAME = ExtensionPointName.create<NGramElementProvider>("completion.ngram.ngramElementProvider")
 
         fun getSupportedFileTypes(): Set<FileType>  {
             return ExtensionPointName<NGramElementProvider>(EP_NAME.name)

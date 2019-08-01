@@ -18,6 +18,7 @@ repositories {
 intellij {
     pluginName = "code-completion-benchmark"
     version = "2019.1.3"
+    setPlugins(project(":code-completion-benchmark-toolkit"))
 
     updateSinceUntilBuild = false
 }

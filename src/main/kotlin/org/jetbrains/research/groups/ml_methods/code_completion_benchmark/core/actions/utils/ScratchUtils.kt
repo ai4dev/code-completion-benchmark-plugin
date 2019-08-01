@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.utils
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.utils
 
 import com.intellij.ide.scratch.RootType
 import com.intellij.ide.scratch.ScratchFileService

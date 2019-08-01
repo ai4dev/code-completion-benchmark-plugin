@@ -1,12 +1,10 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.dynamic
 
 import com.intellij.psi.PsiFile
-
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.BaseModel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.PredictionWithConf
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.ngrams.NGramModel
-
 import java.io.File
 import java.util.*
 
@@ -37,7 +35,7 @@ class CacheModel(private var model: Model?, private val capacity: Int = DEFAULT_
     override fun forget(input: List<Int>) {}
     override fun forgetToken(input: List<Int>, index: Int) {}
 
-    override fun modelAtIndex(input: List<Int>, index: Int): ConfPrediction {
+    override fun modelAtIndex(input: List<Int>, index: Int): PredictionWithConf {
         val modeled = model!!.modelToken(input, index)
         updateCache(input, index)
         return modeled
@@ -64,7 +62,7 @@ class CacheModel(private var model: Model?, private val capacity: Int = DEFAULT_
         cache.addLast(Pair(list, index))
     }
 
-    override fun predictAtIndex(input: List<Int>, index: Int): Map<Int, ConfPrediction> {
+    override fun predictAtIndex(input: List<Int>, index: Int): Map<Int, PredictionWithConf> {
         return model!!.predictToken(input, index)
     }
 

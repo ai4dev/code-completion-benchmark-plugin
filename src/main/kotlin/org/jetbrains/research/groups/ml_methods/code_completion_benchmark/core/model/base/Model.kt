@@ -28,19 +28,19 @@ interface Model {
         return 0.0
     }
 
-    fun model(input: List<Int>): List<ConfPrediction> {
+    fun model(input: List<Int>): List<PredictionWithConf> {
         return (0 until input.size)
                 .map { modelToken(input, it) }
     }
 
-    fun modelToken(input: List<Int>, index: Int): ConfPrediction
+    fun modelToken(input: List<Int>, index: Int): PredictionWithConf
 
-    fun predict(input: List<Int>): List<Map<Int, ConfPrediction>> {
+    fun predict(input: List<Int>): List<Map<Int, PredictionWithConf>> {
         return (0 until input.size)
                 .map { predictToken(input, it) }
     }
 
-    fun predictToken(input: List<Int>, index: Int): Map<Int, ConfPrediction>
+    fun predictToken(input: List<Int>, index: Int): Map<Int, PredictionWithConf>
 
     fun save(directory: File)
 

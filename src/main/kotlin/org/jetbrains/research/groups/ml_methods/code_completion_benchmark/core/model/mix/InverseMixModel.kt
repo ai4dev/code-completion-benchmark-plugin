@@ -1,7 +1,7 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.mix
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Model
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.PredictionWithConf
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.dynamic.CacheModel
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.ngrams.JMModel
 import java.io.File
@@ -15,10 +15,10 @@ class InverseMixModel(
     override fun mix(
             input: List<Int>,
             index: Int,
-            res1: ConfPrediction,
-            res2: ConfPrediction
-    ): ConfPrediction = when {
-        res1.confidence == 0.0 && res2.confidence == 0.0 -> ConfPrediction(0.0, 0.0)
+            res1: PredictionWithConf,
+            res2: PredictionWithConf
+    ): PredictionWithConf = when {
+        res1.confidence == 0.0 && res2.confidence == 0.0 -> PredictionWithConf(0.0, 0.0)
         res2.confidence == 0.0                           -> res1
         res1.confidence == 0.0                           -> res2
         else                                             -> {
@@ -28,7 +28,7 @@ class InverseMixModel(
             val probability = (res1.probability * lNorm + res2.probability * rNorm) / (lNorm + rNorm)
             val confidence = max(res1.confidence, res2.confidence)
 
-            ConfPrediction(probability, confidence)
+            PredictionWithConf(probability, confidence)
         }
     }
 

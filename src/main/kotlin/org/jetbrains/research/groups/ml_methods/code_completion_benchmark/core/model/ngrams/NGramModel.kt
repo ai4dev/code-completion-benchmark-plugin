@@ -5,15 +5,15 @@ import com.intellij.psi.PsiFile
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.Counter
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.storage.MapTrieCounter
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.BaseModel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.ConfPrediction
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.runners.ModelRunner
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.PredictionWithConf
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.NGram
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.sequencer.NGramSequencer
 
 import java.util.stream.Collectors
 import kotlin.math.pow
 
 abstract class NGramModel(
-        val order: Int = ModelRunner.DEFAULT_NGRAM_ORDER,
+        val order: Int = NGram.DEFAULT_NGRAM_ORDER,
         var counter: Counter = MapTrieCounter()
 ) : BaseModel() {
 
@@ -41,7 +41,7 @@ abstract class NGramModel(
         }
     }
 
-    override fun modelAtIndex(input: List<Int>, index: Int): ConfPrediction {
+    override fun modelAtIndex(input: List<Int>, index: Int): PredictionWithConf {
         val sequence = NGramSequencer.sequenceAt(input, index, this.order)
         var probability = 0.0
         var mass = 0.0
@@ -60,18 +60,18 @@ abstract class NGramModel(
         if (mass > 0) probability /= mass
         // In the new model, final confidence is asymptotically close to 1 for all n-gram models
         val confidence = 1 - 2.0.pow((-hits).toDouble())
-        return ConfPrediction(probability, confidence)
+        return PredictionWithConf(probability, confidence)
     }
 
-    protected abstract fun modelWithConfidence(subList: List<Int>, counts: LongArray): ConfPrediction
+    protected abstract fun modelWithConfidence(subList: List<Int>, counts: LongArray): PredictionWithConf
 
-    override fun predictAtIndex(input: List<Int>, index: Int): Map<Int, ConfPrediction> {
+    override fun predictAtIndex(input: List<Int>, index: Int): Map<Int, PredictionWithConf> {
         val inputRev = input.reversed()
         val sequence = NGramSequencer.sequenceAt(inputRev, index, order)
         val predictions = HashSet<Int>()
 
         for (i in 0..sequence.size) {
-            val limit = ModelRunner.GLOBAL_PREDICTION_CUTOFF - predictions.size
+            val limit = GLOBAL_PREDICTION_CUTOFF - predictions.size
             if (limit <= 0) break
             predictions.addAll(counter.getTopSuccessors(sequence.subList(i, sequence.size), limit.toInt()))
         }
@@ -81,7 +81,7 @@ abstract class NGramModel(
         )
     }
 
-    private fun prob(input: MutableList<Int>, index: Int, prediction: Int): ConfPrediction {
+    private fun prob(input: MutableList<Int>, index: Int, prediction: Int): PredictionWithConf {
         val added = index == input.size
         if (added) input.add(0)
         val prev = input.set(index, prediction)
@@ -98,6 +98,7 @@ abstract class NGramModel(
     }
 
     companion object {
+        const val GLOBAL_PREDICTION_CUTOFF = 10
 
         private var standard: Class<out NGramModel> = JMModel::class.java
         fun setStandard(clazz: Class<out NGramModel>) {

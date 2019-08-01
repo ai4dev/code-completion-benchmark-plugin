@@ -1,8 +1,7 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.completion.ngram
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.collectors.JavaASTCollector
 
 data class NGram(val elements: List<String>) {

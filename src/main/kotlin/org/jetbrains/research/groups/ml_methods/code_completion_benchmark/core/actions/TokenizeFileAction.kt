@@ -1,10 +1,10 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.actions.utils.ScratchUtils
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.utils.ScratchUtils
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.tokenizers.JavaTokenizer
 
 class TokenizeFileAction : AnAction() {

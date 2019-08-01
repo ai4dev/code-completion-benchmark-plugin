@@ -4,7 +4,7 @@ import com.intellij.psi.PsiDirectory
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.io.Reader
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.Vocabulary
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.TokenVocabulary
 
 import java.io.*
 import java.nio.charset.StandardCharsets
@@ -21,8 +21,8 @@ object VocabularyBuilder {
             field = cut
         }
 
-    fun build(tokenizerWrapper: TokenizerWrapper, root: PsiDirectory): Vocabulary {
-        val vocabulary = Vocabulary()
+    fun build(tokenizerWrapper: TokenizerWrapper, root: PsiDirectory): TokenVocabulary {
+        val vocabulary = TokenVocabulary()
         val iterationCount = intArrayOf(0)
 
         val counts = tokenizerWrapper
@@ -49,7 +49,7 @@ object VocabularyBuilder {
                 vocabulary.store(token, count)
             }
         }
-        vocabulary.store(Vocabulary.UNKNOWN_TOKEN, vocabulary.getCount(Vocabulary.UNKNOWN_TOKEN)!! + unkCount)
+        vocabulary.store(TokenVocabulary.UNKNOWN_TOKEN, vocabulary.getCount(TokenVocabulary.UNKNOWN_TOKEN)!! + unkCount)
 
         if (iterationCount[0] > PRINT_FREQ)
             println("Vocabulary constructed on ${iterationCount[0]} tokens, size: ${vocabulary.size()}")
@@ -57,8 +57,8 @@ object VocabularyBuilder {
         return vocabulary
     }
 
-    fun read(file: File): Vocabulary {
-        val vocabulary = Vocabulary()
+    fun read(file: File): TokenVocabulary {
+        val vocabulary = TokenVocabulary()
 
         Reader.readLines(file)
                 .map { it.split("\t".toRegex(), 3) }
@@ -76,12 +76,12 @@ object VocabularyBuilder {
         return vocabulary
     }
 
-    fun write(vocabulary: Vocabulary, file: File) {
+    fun write(tokenVocabulary: TokenVocabulary, file: File) {
         try {
             BufferedWriter(OutputStreamWriter(FileOutputStream(file), StandardCharsets.UTF_8)).use { fw ->
-                for (i in 0 until vocabulary.size()) {
-                    val count = vocabulary.counts[i]
-                    val word = vocabulary.words[i]
+                for (i in 0 until tokenVocabulary.size()) {
+                    val count = tokenVocabulary.counts[i]
+                    val word = tokenVocabulary.words[i]
                     fw.append(count.toString() + "\t" + i + "\t" + word + "\n")
                 }
             }
