@@ -8,7 +8,6 @@ import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.l
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.lang.wrappers.TokenizerWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.Completion
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.base.PredictionWithConf
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.model.mix.InverseMixModel
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.beans.Prediction
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.model.AbstractModelRunner
 
@@ -18,7 +17,7 @@ import java.util.stream.IntStream
 import kotlin.math.ln
 import kotlin.streams.asStream
 
-class NGramModelRunner : AbstractModelRunner<InverseMixModel>() {
+class NGramModelRunner : AbstractModelRunner() {
     override val id: String = NGramModelRunner::class.java.name
 
     override val modelWrapper = NGramModelWrapper()
@@ -27,13 +26,13 @@ class NGramModelRunner : AbstractModelRunner<InverseMixModel>() {
     private var tokenizerWrapper = TokenizerWrapper(JavaTokenizer(), true)
     private var selfTesting = false
 
-    override fun getCodeSuggestion(codePiece: Any): Prediction? {
+    override fun getTopCodeSuggestion(codePiece: Any): Prediction? {
         val queryIndices = vocabularyWrapper.translateCodePiece(codePiece)
         val prediction = modelWrapper.predictToken(queryIndices.toList(), queryIndices.count() - 1)
                 .toList()
                 .maxBy { (_, value) -> value.probability }!!
 
-        return Prediction(vocabularyWrapper.translateTokenBack(prediction.first), prediction.second.probability)
+        return Prediction(vocabularyWrapper.representationToTokenText(prediction.first), prediction.second.probability)
     }
 
     override fun getTopNCodeSuggestions(codePiece: Any, maxNumberOfSuggestions: Int): List<Prediction> {
@@ -41,7 +40,7 @@ class NGramModelRunner : AbstractModelRunner<InverseMixModel>() {
 
         return modelWrapper.predictToken(queryIndices.toList(), queryIndices.count() - 1)
                 .toList()
-                .map { (key, value) -> Prediction(vocabularyWrapper.translateTokenBack(key), value.probability) }
+                .map { (key, value) -> Prediction(vocabularyWrapper.representationToTokenText(key), value.probability) }
                 .sortedByDescending { (_, value) -> value }
                 .take(maxNumberOfSuggestions)
     }

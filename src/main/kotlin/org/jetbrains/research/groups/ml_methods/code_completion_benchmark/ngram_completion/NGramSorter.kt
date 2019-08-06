@@ -14,7 +14,10 @@ class CompletionSorterFactory : CompletionFinalSorter.Factory {
 }
 
 class NGramSorter : Sorter() {
-    override fun rankCompletions(completions: MutableIterable<LookupElement>, parameters: CompletionParameters): MutableIterable<LookupElement>? {
+    override fun rankCompletions(
+            completions: MutableIterable<LookupElement>,
+            parameters: CompletionParameters
+    ): MutableIterable<LookupElement>? {
         val nGram = NGram.getNGramForElement(getPsiElementByParameters(parameters)).elements
 
         val modelCompletions = modelService
@@ -28,11 +31,11 @@ class NGramSorter : Sorter() {
                 result.add(it.first)
             }
         }
-        return result
+        return if (result.isNullOrEmpty()) completions else result
     }
 
     companion object {
         private val RUNNER_ID = NGramModelRunner::class.java.name
-        private val modelService = ModelRunnerRegistrar.getInstance().registeredRunners.find { it.id == RUNNER_ID }
+        private val modelService = ModelRunnerRegistrar.getInstance().getRunnerById(RUNNER_ID)
     }
 }

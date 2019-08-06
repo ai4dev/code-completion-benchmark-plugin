@@ -17,6 +17,10 @@
                         interface="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.NGramElementProvider"/>
     </extensionPoints>
 
+    <extensions defaultExtensionNs="code-completion-benchmark-toolkit">
+        <modelRunnerProvider implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram_completion.NGramModelRunnerProvider"/>
+    </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceInterface="com.intellij.codeInsight.completion.CompletionFinalSorter$Factory"
                             serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram_completion.CompletionSorterFactory"/>
@@ -25,10 +29,6 @@
     <extensions defaultExtensionNs="completion.ngram">
         <ngramElementProvider
                 implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.lang.JavaNGramElementProvider"/>
-    </extensions>
-
-    <extensions defaultExtensionNs="code-completion-benchmark-toolkit">
-        <modelRunnerProvider implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram_completion.NGramModelRunnerProvider"/>
     </extensions>
 
     <actions>

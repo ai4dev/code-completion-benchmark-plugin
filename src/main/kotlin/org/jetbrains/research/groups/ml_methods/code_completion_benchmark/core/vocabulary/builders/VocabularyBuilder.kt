@@ -10,8 +10,6 @@ import java.io.*
 import java.nio.charset.StandardCharsets
 
 object VocabularyBuilder {
-
-    private val PRINT_FREQ = 1000000
     private var cutOff = 0
         set(value) {
             var cut = value
@@ -23,19 +21,11 @@ object VocabularyBuilder {
 
     fun build(tokenizerWrapper: TokenizerWrapper, root: PsiDirectory): TokenVocabulary {
         val vocabulary = TokenVocabulary()
-        val iterationCount = intArrayOf(0)
 
         val counts = tokenizerWrapper
                 .lexDirectory(root)!!
                 .flatMap { it.second }
                 .flatten()
-                .onEach {
-                    if (++iterationCount[0] % PRINT_FREQ == 0)
-                        System.out.printf(
-                            "Building vocabulary, %dM tokens processed\n",
-                            (iterationCount[0] / PRINT_FREQ).toFloat()
-                        )
-                }
                 .groupingBy { it }
                 .eachCount()
 
@@ -49,10 +39,8 @@ object VocabularyBuilder {
                 vocabulary.store(token, count)
             }
         }
-        vocabulary.store(TokenVocabulary.UNKNOWN_TOKEN, vocabulary.getCount(TokenVocabulary.UNKNOWN_TOKEN)!! + unkCount)
-
-        if (iterationCount[0] > PRINT_FREQ)
-            println("Vocabulary constructed on ${iterationCount[0]} tokens, size: ${vocabulary.size()}")
+        vocabulary.store(TokenVocabulary.UNKNOWN_TOKEN,
+                         vocabulary.getCount(TokenVocabulary.UNKNOWN_TOKEN)!! + unkCount)
 
         return vocabulary
     }
@@ -65,10 +53,6 @@ object VocabularyBuilder {
                 .filter { it[0].toInt() >= cutOff }
                 .forEach { split ->
                     val count = split[0].toInt()
-                    val index = split[1].toInt()
-                    if (index > 0 && index != vocabulary.size()) {
-                        println("VocabularyRunner.read(): non-consecutive indices while reading vocabulary!")
-                    }
                     val token = split[2]
                     vocabulary.store(token, count)
                 }
@@ -86,7 +70,6 @@ object VocabularyBuilder {
                 }
             }
         } catch (e: IOException) {
-            println("Error writing vocabulary in Vocabulary.toFile()")
             e.printStackTrace()
         }
 

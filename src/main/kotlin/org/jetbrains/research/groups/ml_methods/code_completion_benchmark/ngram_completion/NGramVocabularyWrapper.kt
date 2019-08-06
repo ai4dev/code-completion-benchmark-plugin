@@ -1,37 +1,39 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram_completion
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.TokenVocabulary
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.vocabulary.Vocabulary
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary.builders.VocabularyBuilder
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.vocabulary.AbstractVocabularyWrapper
+import java.io.File
 
-class NGramVocabularyWrapper : Vocabulary<Int> {
-    private var tokenVocabulary: TokenVocabulary = TokenVocabulary()
+class NGramVocabularyWrapper : AbstractVocabularyWrapper<Int, Iterable<Int>, TokenVocabulary>() {
+    override var vocabulary: TokenVocabulary = TokenVocabulary()
 
     override fun translateCodePiece(codePiece: Any): Iterable<Int> {
         val tokens = (codePiece as? List<*>)?.filterIsInstance<String>() ?: return emptyList()
-        return tokenVocabulary.toIndices(tokens)
-    }
-
-    override fun translateToken(name: String): Int? {
-        return tokenVocabulary.toIndex(name)
-    }
-
-    override fun translateTokenBack(token: Int): String {
-        return tokenVocabulary.toWord(token)
+        return tokensListToRepresentations(tokens).asIterable().filterNotNull()
     }
 
     override fun getVocabularySize(): Int {
-        return tokenVocabulary.size()
+        return vocabulary.size()
     }
 
     fun setCheckpoint() {
-        tokenVocabulary.checkPoint = tokenVocabulary.words.size
+        vocabulary.checkPoint = vocabulary.words.size
     }
 
     fun restoreCheckpoint() {
-        for (i in tokenVocabulary.words.size downTo tokenVocabulary.checkPoint + 1) {
-            tokenVocabulary.counts.removeAt(tokenVocabulary.counts.size - 1)
-            val word = tokenVocabulary.words.removeAt(tokenVocabulary.words.size - 1)
-            tokenVocabulary.wordIndices.remove(word)
+        for (i in vocabulary.words.size downTo vocabulary.checkPoint + 1) {
+            vocabulary.counts.removeAt(vocabulary.counts.size - 1)
+            val word = vocabulary.words.removeAt(vocabulary.words.size - 1)
+            vocabulary.wordIndices.remove(word)
         }
+    }
+
+    override fun loadVocabulary(source: File): TokenVocabulary {
+        return VocabularyBuilder.read(source)
+    }
+
+    override fun saveVocabulary(target: File) {
+        VocabularyBuilder.write(vocabulary, target)
     }
 }

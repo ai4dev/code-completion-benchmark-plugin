@@ -1,9 +1,9 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.vocabulary
 
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.vocabulary.Vocabulary
 import java.io.Serializable
 
-open class TokenVocabulary : Serializable {
-
+class TokenVocabulary : Vocabulary<Int>, Serializable {
     val wordIndices: MutableMap<String, Int> = HashMap()
     val words: MutableList<String> = ArrayList()
     val counts: MutableList<Int> = ArrayList()
@@ -22,7 +22,7 @@ open class TokenVocabulary : Serializable {
         counts.add(0)
     }
 
-    fun size(): Int {
+    override fun size(): Int {
         return words.size
     }
 
@@ -48,26 +48,11 @@ open class TokenVocabulary : Serializable {
     }
 
     fun toIndices(tokens: Sequence<String>): Sequence<Int> {
-        return tokens.map { toIndex(it) }
+        return tokens.map { translateToken(it) }
     }
 
     fun toIndices(tokens: List<String>): List<Int> {
-        return tokens.map { toIndex(it) }
-    }
-
-    fun toIndex(token: String): Int {
-        var index: Int? = wordIndices[token]
-        if (index == null) {
-            if (closed) {
-                return wordIndices[UNKNOWN_TOKEN]!!
-            } else {
-                index = wordIndices.size
-                wordIndices[token] = index
-                words.add(token)
-                counts.add(1)
-            }
-        }
-        return index
+        return tokens.map { translateToken(it) }
     }
 
     fun getCount(token: String): Int? {
@@ -80,15 +65,30 @@ open class TokenVocabulary : Serializable {
     }
 
     fun toWords(indices: Sequence<Int>): Sequence<String> {
-        return indices.map { toWord(it) }
+        return indices.map { translateTokenBack(it) }
     }
 
     fun toWords(indices: List<Int>): List<String> {
-        return indices.map { toWord(it) }
+        return indices.map { translateTokenBack(it) }
     }
 
-    fun toWord(index: Int): String {
-        return words[index]
+    override fun translateTokenBack(token: Int): String {
+        return words[token]
+    }
+
+    override fun translateToken(tokenText: String): Int {
+        var index: Int? = wordIndices[tokenText]
+        if (index == null) {
+            if (closed) {
+                return wordIndices[UNKNOWN_TOKEN]!!
+            } else {
+                index = wordIndices.size
+                wordIndices[tokenText] = index
+                words.add(tokenText)
+                counts.add(1)
+            }
+        }
+        return index
     }
 
     companion object {

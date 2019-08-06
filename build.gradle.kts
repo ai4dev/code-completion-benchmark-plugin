@@ -30,12 +30,14 @@ dependencies {
 }
 
 
-tasks.withType<KotlinJvmCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
+tasks {
+    withType<KotlinJvmCompile> {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
-}
 
-tasks.withType<RunIdeTask> {
-    jvmArgs("-Xmx1g")
+    withType<RunIdeTask> {
+        jvmArgs("-Xmx1g")
+    }
 }
