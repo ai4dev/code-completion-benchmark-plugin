@@ -1,7 +1,7 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.storage;
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.counter.storage;
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.counter.Counter;
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.NGram;
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.counter.Counter;
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.NGram;
 
 import java.io.IOException;
 import java.io.ObjectInput;
