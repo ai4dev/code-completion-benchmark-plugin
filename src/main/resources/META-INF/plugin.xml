@@ -14,21 +14,21 @@
 
     <extensionPoints>
         <extensionPoint qualifiedName="completion.ngram.ngramElementProvider"
-                        interface="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.NGramElementProvider"/>
+                        interface="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.NGramElementProvider"/>
     </extensionPoints>
 
     <extensions defaultExtensionNs="code-completion-benchmark-toolkit">
-        <modelRunnerProvider implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram_completion.NGramModelRunnerProvider"/>
+        <modelRunnerProvider implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.NGramModelRunnerProvider"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceInterface="com.intellij.codeInsight.completion.CompletionFinalSorter$Factory"
-                            serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram_completion.CompletionSorterFactory"/>
+                            serviceImplementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.sorter.CompletionSorterFactory"/>
     </extensions>
 
     <extensions defaultExtensionNs="completion.ngram">
         <ngramElementProvider
-                implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.lang.JavaNGramElementProvider"/>
+                implementation="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.lang.JavaNGramElementProvider"/>
     </extensions>
 
     <actions>
@@ -36,14 +36,14 @@
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </group>
         <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.TokenizeFileAction"
-                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.TokenizeFileAction"
+                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.actions.TokenizeFileAction"
                 text="Tokenize File">
             <add-to-group
                     group-id="CompletionActions"
                     anchor="first"/>
         </action>
         <action id="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.BuildVocabularyAction"
-                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.actions.BuildVocabularyAction"
+                class="org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.actions.BuildVocabularyAction"
                 text="Build Vocabulary for File">
             <add-to-group
                     group-id="CompletionActions"
@@ -54,7 +54,7 @@
     <project-components>
         <component>
             <implementation-class>
-                org.jetbrains.research.groups.ml_methods.code_completion_benchmark.core.ngram.components.NGramModelComponent
+                org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.components.NGramModelComponent
             </implementation-class>
         </component>
     </project-components>
