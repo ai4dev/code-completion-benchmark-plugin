@@ -1,6 +1,6 @@
 package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.wrappers
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.NGramVocabulary
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.vocabulary.NGramVocabulary
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.vocabulary.builders.VocabularyBuilder
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.vocabulary.AbstractVocabularyWrapper
 

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiManager
 
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.lang.tokenizers.JavaTokenizer
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.lang.wrappers.TokenizerWrapper
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.components.NGramModelComponent
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.services.components.NGramModelComponent
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.vocabulary.builders.VocabularyBuilder
 
 class BuildVocabularyAction : AnAction() {

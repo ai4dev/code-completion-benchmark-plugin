@@ -3,16 +3,14 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram
 import com.intellij.lang.java.JavaLanguage
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
-
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.Completion
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.PredictionWithConf
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.wrappers.NGramModelWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.wrappers.NGramVocabularyWrapper
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.lang.tokenizers.JavaTokenizer
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.lang.wrappers.TokenizerWrapper
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.Completion
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.PredictionWithConf
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.beans.Prediction
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.model.AbstractModelRunner
-
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream

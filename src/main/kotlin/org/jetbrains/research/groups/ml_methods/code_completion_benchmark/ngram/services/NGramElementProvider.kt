@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.services
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.extensions.ExtensionPointName

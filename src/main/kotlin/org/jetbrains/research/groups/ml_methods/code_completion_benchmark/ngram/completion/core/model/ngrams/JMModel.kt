@@ -1,11 +1,10 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.ngrams
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.ngrams
 
 
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.Model
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.PredictionWithConf
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.counter.Counter
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.counter.storage.MapTrieCounter
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.Model
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.PredictionWithConf
-
 import java.io.File
 
 class JMModel(

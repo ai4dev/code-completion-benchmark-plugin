@@ -5,7 +5,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.Pair
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.runners.NGramModelRunner
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.NGram
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.services.NGram
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.services.ModelRunnerRegistrar
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.sorting.Sorter
 

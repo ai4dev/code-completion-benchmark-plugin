@@ -1,4 +1,4 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.components
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.services.components
 
 import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.components.ProjectComponent

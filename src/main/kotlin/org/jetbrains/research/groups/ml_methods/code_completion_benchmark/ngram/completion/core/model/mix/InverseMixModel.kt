@@ -1,9 +1,9 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.mix
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.mix
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.Model
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.PredictionWithConf
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.dynamic.CacheModel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.ngrams.JMModel
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.Model
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.PredictionWithConf
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.dynamic.CacheModel
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.ngrams.JMModel
 import java.io.File
 import kotlin.math.max
 

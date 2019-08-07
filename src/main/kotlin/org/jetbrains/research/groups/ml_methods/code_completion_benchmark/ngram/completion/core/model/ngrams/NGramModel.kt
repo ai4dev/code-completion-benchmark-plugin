@@ -1,14 +1,12 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.ngrams
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.ngrams
 
 import com.intellij.psi.PsiFile
-
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.BaseModel
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.PredictionWithConf
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.counter.Counter
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.counter.storage.MapTrieCounter
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.BaseModel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.PredictionWithConf
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.NGram
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.sequencer.NGramSequencer
-
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.services.NGram
 import java.util.stream.Collectors
 import kotlin.math.pow
 

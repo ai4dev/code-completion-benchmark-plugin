@@ -1,11 +1,11 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.lang
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.services.lang
 
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.util.text.StringUtil
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.ngram.AbstractNGramElementProvider
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.services.AbstractNGramElementProvider
 
 class JavaNGramElementProvider : AbstractNGramElementProvider() {
 

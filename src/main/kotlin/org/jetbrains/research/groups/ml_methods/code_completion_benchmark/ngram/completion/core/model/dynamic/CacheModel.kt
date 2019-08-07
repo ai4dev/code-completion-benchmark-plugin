@@ -1,11 +1,11 @@
-package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.dynamic
+package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.dynamic
 
 import com.intellij.psi.PsiFile
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.BaseModel
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.Model
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.PredictionWithConf
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.ngrams.NGramModel
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.BaseModel
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.Model
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.PredictionWithConf
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.ngrams.NGramModel
 
 import java.io.File
 import java.util.*

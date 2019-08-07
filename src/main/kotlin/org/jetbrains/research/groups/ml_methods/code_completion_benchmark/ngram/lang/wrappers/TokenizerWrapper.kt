@@ -5,7 +5,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.NGramVocabulary
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.vocabulary.NGramVocabulary
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.lang.Tokenizer
 
 class TokenizerWrapper(

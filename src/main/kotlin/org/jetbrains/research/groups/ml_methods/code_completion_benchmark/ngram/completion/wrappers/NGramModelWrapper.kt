@@ -2,8 +2,8 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram
 
 import com.intellij.psi.PsiFile
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.base.PredictionWithConf
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.model.mix.InverseMixModel
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.base.PredictionWithConf
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.model.mix.InverseMixModel
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.toolkit.model.AbstractModelWrapper
 
 class NGramModelWrapper : AbstractModelWrapper<InverseMixModel>() {

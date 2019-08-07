@@ -2,7 +2,7 @@ package org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram
 
 import com.intellij.psi.PsiDirectory
 
-import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.NGramVocabulary
+import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.completion.core.vocabulary.NGramVocabulary
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.io.Reader
 import org.jetbrains.research.groups.ml_methods.code_completion_benchmark.ngram.lang.wrappers.TokenizerWrapper
 
